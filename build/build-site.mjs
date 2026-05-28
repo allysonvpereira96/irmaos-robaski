@@ -264,7 +264,7 @@ function paginaProduto(p, categoria, relacionados) {
   <meta property="product:price:currency" content="BRL">
 
   ${HEAD_FONTS}
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png">
 
@@ -433,7 +433,7 @@ function paginaCategoria(cat, produtosCat) {
   <meta property="og:description" content="${escapeAttr(desc)}">
 
   ${HEAD_FONTS}
-  <link rel="stylesheet" href="../assets/css/style.css">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png">
 
