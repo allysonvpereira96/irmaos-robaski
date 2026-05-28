@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Auditoria de Imagens · Irmãos Robaski</title>
+  <meta name="robots" content="noindex, nofollow">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/style.css">
+  <style>
+    body { background: #f6f8fb; }
+    .audit-header {
+      background: #fff;
+      padding: 20px 24px;
+      border-bottom: 1px solid var(--border);
+      position: sticky; top: 0; z-index: 50;
+      box-shadow: var(--shadow-sm);
+    }
+    .audit-title { font-size: 22px; font-weight: 800; color: var(--brand); margin-bottom: 6px; }
+    .audit-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 14px; }
+    .audit-stats { display: flex; gap: 24px; flex-wrap: wrap; margin-bottom: 12px; }
+    .audit-stat { font-size: 13px; }
+    .audit-stat strong { font-size: 18px; font-weight: 800; color: var(--brand); display: block; }
+    .audit-controls { display: flex; gap: 8px; flex-wrap: wrap; align-items: center; }
+    .audit-controls input, .audit-controls select {
+      padding: 8px 12px; border: 1px solid var(--border);
+      border-radius: 6px; font-size: 13px; background: #fff;
+    }
+    .audit-controls input { min-width: 240px; }
+    .audit-toggle {
+      display: inline-flex; gap: 6px; padding: 8px 14px;
+      border: 1px solid var(--border); border-radius: 6px;
+      background: #fff; font-size: 13px; cursor: pointer;
+      transition: all 0.12s;
+    }
+    .audit-toggle.ativo { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .audit-toggle:hover:not(.ativo) { border-color: var(--brand); }
+
+    .audit-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+      gap: 10px;
+      padding: 16px;
+      max-width: 1600px;
+      margin: 0 auto;
+    }
+    .audit-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.12s;
+      position: relative;
+    }
+    .audit-card:hover { border-color: var(--brand); transform: scale(1.02); box-shadow: var(--shadow); }
+    .audit-card.marcado { border: 2px solid var(--danger); background: #fef2f2; }
+    .audit-card.marcado::after {
+      content: '✗ ERRADA';
+      position: absolute; top: 8px; right: 8px;
+      background: var(--danger); color: #fff;
+      font-size: 10px; font-weight: 800;
+      padding: 3px 8px; border-radius: 4px;
+      letter-spacing: 0.05em;
+    }
+    .audit-img {
+      aspect-ratio: 1;
+      background: var(--bg-soft);
+      display: flex; align-items: center; justify-content: center;
+    }
+    .audit-img img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+    .audit-info { padding: 8px 10px; }
+    .audit-nome {
+      font-size: 11px; font-weight: 600;
+      color: var(--text); line-height: 1.3;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 42px;
+    }
+    .audit-meta {
+      font-size: 10px; color: var(--text-soft);
+      margin-top: 4px;
+      display: flex; justify-content: space-between;
+    }
+    .audit-cat { color: var(--brand); font-weight: 600; }
+
+    .audit-footer {
+      position: fixed; bottom: 0; left: 0; right: 0;
+      background: var(--text); color: #fff;
+      padding: 14px 24px;
+      display: flex; justify-content: space-between; align-items: center;
+      box-shadow: 0 -4px 12px rgba(0,0,0,0.15);
+      z-index: 50;
+    }
+    .audit-footer-count { font-size: 14px; }
+    .audit-footer-count strong { color: #f59e0b; font-weight: 800; }
+    .audit-footer-actions { display: flex; gap: 8px; }
+    .audit-footer button {
+      padding: 8px 14px;
+      border-radius: 6px;
+      font-size: 13px; font-weight: 600;
+      cursor: pointer;
+      transition: all 0.12s;
+    }
+    .audit-footer button.danger { background: var(--danger); color: #fff; border: 0; }
+    .audit-footer button.secondary { background: rgba(255,255,255,0.15); color: #fff; border: 0; }
+    .audit-footer button:hover { transform: translateY(-1px); }
+    .audit-footer button:disabled { opacity: 0.4; cursor: not-allowed; }
+  </style>
+</head>
+<body>
+
+  <div class="audit-header">
+    <div class="audit-title">Auditoria de Imagens — Irmãos Robaski</div>
+    <div class="audit-sub">Clique nas imagens ERRADAS pra marcá-las. No final, exporte a lista de slugs pra remover.</div>
+
+    <div class="audit-stats" id="stats">
+      <div class="audit-stat"><strong id="stat-total">—</strong>Total no catálogo</div>
+      <div class="audit-stat"><strong id="stat-comfoto">—</strong>Com foto</div>
+      <div class="audit-stat"><strong id="stat-semfoto">—</strong>Sem foto</div>
+      <div class="audit-stat"><strong id="stat-marcadas">0</strong>Marcadas erradas</div>
+    </div>
+
+    <div class="audit-controls">
+      <input type="search" id="busca" placeholder="Buscar produto...">
+      <select id="filtro-cat">
+        <option value="">Todas as categorias</option>
+      </select>
+      <button class="audit-toggle" id="apenas-comfoto">Só com foto</button>
+      <button class="audit-toggle" id="apenas-semfoto">Só sem foto</button>
+      <button class="audit-toggle" id="apenas-marcadas">Só marcadas erradas</button>
+    </div>
+  </div>
+
+  <div class="audit-grid" id="grid"></div>
+
+  <div class="audit-footer">
+    <div class="audit-footer-count">
+      Marcadas como erradas: <strong id="footer-count">0</strong>
+      <span style="opacity:0.7; margin-left: 8px;">— ficam salvas no navegador (localStorage)</span>
+    </div>
+    <div class="audit-footer-actions">
+      <button class="secondary" id="limpar" disabled>Limpar todas</button>
+      <button class="danger" id="exportar" disabled>Exportar lista de erradas</button>
+    </div>
+  </div>
+
+<script>
+  const STORAGE_KEY = 'robaski_audit_erradas';
+  let produtos = [];
+  let categorias = [];
+  let marcadas = new Set(JSON.parse(localStorage.getItem(STORAGE_KEY) || '[]'));
+
+  const filtros = {
+    busca: '',
+    categoria: '',
+    apenasComFoto: false,
+    apenasSemFoto: false,
+    apenasMarcadas: false,
+  };
+
+  function normalize(s) {
+    return s.normalize('NFD').replace(/[̀-ͯ]/g, '').toLowerCase();
+  }
+
+  function salvar() {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify([...marcadas]));
+    document.getElementById('stat-marcadas').textContent = marcadas.size;
+    document.getElementById('footer-count').textContent = marcadas.size;
+    document.getElementById('exportar').disabled = marcadas.size === 0;
+    document.getElementById('limpar').disabled = marcadas.size === 0;
+  }
+
+  function aplicarFiltros() {
+    let lista = produtos.slice();
+    if (filtros.busca) {
+      const q = normalize(filtros.busca);
+      lista = lista.filter(p => normalize(p.nome).includes(q));
+    }
+    if (filtros.categoria) lista = lista.filter(p => p.categoriaHumana === filtros.categoria);
+    if (filtros.apenasComFoto) lista = lista.filter(p => p.imagem);
+    if (filtros.apenasSemFoto) lista = lista.filter(p => !p.imagem);
+    if (filtros.apenasMarcadas) lista = lista.filter(p => marcadas.has(p.slug));
+    return lista;
+  }
+
+  function render() {
+    const grid = document.getElementById('grid');
+    const lista = aplicarFiltros();
+    grid.innerHTML = lista.map(p => {
+      const cat = categorias.find(c => c.slug === p.categoriaHumana);
+      const imgSrc = p.imagem || 'assets/img/placeholder.svg';
+      const marc = marcadas.has(p.slug) ? 'marcado' : '';
+      return `
+        <div class="audit-card ${marc}" data-slug="${p.slug}">
+          <div class="audit-img"><img src="${imgSrc}" alt="" loading="lazy"></div>
+          <div class="audit-info">
+            <div class="audit-nome">${p.nome}</div>
+            <div class="audit-meta">
+              <span class="audit-cat">${cat?.titulo || ''}</span>
+              <span>${p.id}</span>
+            </div>
+          </div>
+        </div>
+      `;
+    }).join('');
+    grid.querySelectorAll('.audit-card').forEach(card => {
+      card.addEventListener('click', () => {
+        const slug = card.getAttribute('data-slug');
+        if (marcadas.has(slug)) {
+          marcadas.delete(slug);
+          card.classList.remove('marcado');
+        } else {
+          marcadas.add(slug);
+          card.classList.add('marcado');
+        }
+        salvar();
+      });
+    });
+  }
+
+  async function init() {
+    const [pRes, cRes] = await Promise.all([
+      fetch('data/produtos.json'),
+      fetch('data/categorias.json'),
+    ]);
+    produtos = await pRes.json();
+    categorias = await cRes.json();
+
+    const comFoto = produtos.filter(p => p.imagem).length;
+    document.getElementById('stat-total').textContent = produtos.length;
+    document.getElementById('stat-comfoto').textContent = comFoto + ' (' + (comFoto*100/produtos.length).toFixed(1) + '%)';
+    document.getElementById('stat-semfoto').textContent = produtos.length - comFoto;
+
+    // Categorias no select
+    const sel = document.getElementById('filtro-cat');
+    categorias.sort((a,b) => a.ordem - b.ordem).forEach(c => {
+      const opt = document.createElement('option');
+      opt.value = c.slug; opt.textContent = c.titulo + ' (' + c.count + ')';
+      sel.appendChild(opt);
+    });
+
+    // Bindings
+    document.getElementById('busca').addEventListener('input', e => { filtros.busca = e.target.value; render(); });
+    sel.addEventListener('change', e => { filtros.categoria = e.target.value; render(); });
+    ['apenas-comfoto', 'apenas-semfoto', 'apenas-marcadas'].forEach(id => {
+      const btn = document.getElementById(id);
+      const key = id.replace('apenas-', 'apenas') === 'apenascomfoto' ? 'apenasComFoto'
+                : id.replace('apenas-', 'apenas') === 'apenassemfoto' ? 'apenasSemFoto'
+                : 'apenasMarcadas';
+      btn.addEventListener('click', () => {
+        filtros[key] = !filtros[key];
+        btn.classList.toggle('ativo', filtros[key]);
+        // mutex entre os 3 filtros de status
+        if (filtros[key]) {
+          ['apenasComFoto','apenasSemFoto','apenasMarcadas'].forEach(k => { if (k !== key) filtros[k] = false; });
+          ['apenas-comfoto','apenas-semfoto','apenas-marcadas'].forEach(i => { if (i !== id) document.getElementById(i).classList.remove('ativo'); });
+        }
+        render();
+      });
+    });
+
+    document.getElementById('limpar').addEventListener('click', () => {
+      if (!confirm('Limpar todas as marcações?')) return;
+      marcadas.clear();
+      salvar();
+      render();
+    });
+
+    document.getElementById('exportar').addEventListener('click', () => {
+      const lista = [...marcadas].map(slug => {
+        const p = produtos.find(x => x.slug === slug);
+        return p ? { slug: p.slug, id: p.id, nome: p.nome, categoria: p.categoriaHumana, imagem: p.imagem } : { slug };
+      });
+      const csv = [
+        'slug,id,nome,categoria,imagem_arquivo',
+        ...lista.map(p => [p.slug, p.id, JSON.stringify(p.nome), p.categoria, p.imagem || ''].join(','))
+      ].join('\n');
+      const blob = new Blob([csv], { type: 'text/csv;charset=utf-8' });
+      const a = document.createElement('a');
+      a.href = URL.createObjectURL(blob);
+      a.download = `imagens-erradas-${new Date().toISOString().slice(0,10)}.csv`;
+      a.click();
+    });
+
+    salvar();
+    render();
+  }
+
+  init();
+</script>
+
+</body>
+</html>

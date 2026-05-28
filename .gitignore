@@ -1,0 +1,23 @@
+# Dependências
+node_modules/
+
+# Outputs intermediários do pipeline de build (regerados em qualquer build)
+data/produtos-raw.json
+data/relatorio-*.csv
+
+# Logs e tmp
+*.log
+tmp/
+.vercel/
+
+# Editor / OS
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+
+# Env (caso futuramente precise)
+.env
+.env.*
+!.env.example

@@ -1,0 +1,19 @@
+{
+  "name": "irmaos-robaski-website",
+  "version": "0.1.0",
+  "private": true,
+  "type": "module",
+  "description": "Site institucional + catálogo B2B da Irmãos Robaski (1.975 SKUs).",
+  "scripts": {
+    "extract": "node build/extract-from-xlsx.mjs",
+    "map-cats": "node build/mapear-categorias.mjs",
+    "scrape-imgs": "node build/scraper-imagens.mjs",
+    "build": "node build/build-site.mjs",
+    "all": "npm run extract && npm run map-cats && npm run build"
+  },
+  "dependencies": {
+    "xlsx": "^0.18.5",
+    "sharp": "^0.33.5",
+    "fuse.js": "^7.0.0"
+  }
+}

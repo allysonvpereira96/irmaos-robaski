@@ -1,0 +1,154 @@
+[
+  {
+    "slug": "bebidas",
+    "titulo": "Bebidas",
+    "descricao": "Refrigerantes, sucos prontos, cervejas e bebidas em geral.",
+    "ordem": 1,
+    "icone": "beer",
+    "count": 99
+  },
+  {
+    "slug": "vinhos-e-espumantes",
+    "titulo": "Vinhos e Espumantes",
+    "descricao": "Vinhos tintos, brancos, sidras e espumantes para revenda e eventos.",
+    "ordem": 2,
+    "icone": "wine",
+    "count": 87
+  },
+  {
+    "slug": "destilados-e-coqueteis",
+    "titulo": "Destilados e Coquetéis",
+    "descricao": "Cachaça, vodka, whisky, ice e coquetéis prontos.",
+    "ordem": 3,
+    "icone": "martini",
+    "count": 42
+  },
+  {
+    "slug": "energeticos",
+    "titulo": "Energéticos",
+    "descricao": "Energéticos em latas e garrafas, com e sem açúcar.",
+    "ordem": 4,
+    "icone": "zap",
+    "count": 49
+  },
+  {
+    "slug": "aguas-e-sucos",
+    "titulo": "Águas e Sucos",
+    "descricao": "Águas minerais com e sem gás, sucos em sachê e geladinhos.",
+    "ordem": 5,
+    "icone": "droplet",
+    "count": 49
+  },
+  {
+    "slug": "chas-e-mates",
+    "titulo": "Chás e Erva-Mate",
+    "descricao": "Erva-mate, chás importados e nacionais para terere e infusão.",
+    "ordem": 6,
+    "icone": "leaf",
+    "count": 117
+  },
+  {
+    "slug": "doces-e-sobremesas",
+    "titulo": "Doces e Sobremesas",
+    "descricao": "Balas, chocolates, doces enlatados, alfajores, gelatinas e sobremesas em pó.",
+    "ordem": 7,
+    "icone": "candy",
+    "count": 151
+  },
+  {
+    "slug": "biscoitos-e-massas",
+    "titulo": "Biscoitos e Massas",
+    "descricao": "Biscoitos recheados, bolachas, macarrão e massas alimentícias.",
+    "ordem": 8,
+    "icone": "cookie",
+    "count": 50
+  },
+  {
+    "slug": "mercearia-seca",
+    "titulo": "Mercearia Seca",
+    "descricao": "Açúcar, farinha, óleo, sal, cereais, feijão, achocolatados e ingredientes básicos.",
+    "ordem": 9,
+    "icone": "wheat",
+    "count": 99
+  },
+  {
+    "slug": "padaria-e-confeitaria",
+    "titulo": "Padaria e Confeitaria",
+    "descricao": "Misturas para bolo, fermento e ingredientes de confeitaria.",
+    "ordem": 10,
+    "icone": "cake",
+    "count": 27
+  },
+  {
+    "slug": "temperos-e-condimentos",
+    "titulo": "Temperos e Condimentos",
+    "descricao": "Açafrão, canela, cravo, pimenta, ervas e temperos prontos.",
+    "ordem": 11,
+    "icone": "pepper-hot",
+    "count": 56
+  },
+  {
+    "slug": "molhos-e-conservas",
+    "titulo": "Molhos e Conservas",
+    "descricao": "Ketchup, mostarda, maionese, molho de tomate, azeitona, conservas e enlatados.",
+    "ordem": 12,
+    "icone": "soup",
+    "count": 109
+  },
+  {
+    "slug": "limpeza",
+    "titulo": "Limpeza",
+    "descricao": "Água sanitária, detergente, desinfetante, álcool, ceras, esponjas e sacos de lixo.",
+    "ordem": 13,
+    "icone": "spray-can",
+    "count": 164
+  },
+  {
+    "slug": "descartaveis",
+    "titulo": "Descartáveis",
+    "descricao": "Copos, pratos, guardanapos, luvas, papel toalha e higiênico.",
+    "ordem": 14,
+    "icone": "package-open",
+    "count": 149
+  },
+  {
+    "slug": "embalagens",
+    "titulo": "Embalagens",
+    "descricao": "Sacolas, bobinas, potes, bandejas, papel kraft, filme, etiqueta e alumínio.",
+    "ordem": 15,
+    "icone": "package",
+    "count": 520
+  },
+  {
+    "slug": "utilidades-domesticas",
+    "titulo": "Utilidades Domésticas",
+    "descricao": "Velas, baldes, mops, garrafas térmicas, lâmpadas, pilhas, prendedores e inseticidas.",
+    "ordem": 16,
+    "icone": "home",
+    "count": 170
+  },
+  {
+    "slug": "higiene-pessoal",
+    "titulo": "Higiene Pessoal",
+    "descricao": "Fraldas, curativos e itens de higiene.",
+    "ordem": 17,
+    "icone": "heart-pulse",
+    "count": 9
+  },
+  {
+    "slug": "racoes-e-pet",
+    "titulo": "Rações e Pet",
+    "descricao": "Rações, alpiste e itens para animais.",
+    "ordem": 18,
+    "icone": "paw-print",
+    "count": 24
+  },
+  {
+    "slug": "fumo",
+    "titulo": "Fumo",
+    "descricao": "Fumo para cigarro de palha e correlatos.",
+    "ordem": 19,
+    "icone": "cigarette",
+    "count": 1
+  }
+]

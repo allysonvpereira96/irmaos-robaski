@@ -1,0 +1,33 @@
+# robots.txt — Irmãos Robaski
+# Distribuidora atacadista — catálogo público, libera tudo.
+
+User-agent: *
+Allow: /
+Disallow: /build/
+Disallow: /data/
+Disallow: /audit
+Disallow: /audit.html
+
+# AI / LLM bots — explicitamente liberados para serem citados em ChatGPT, Claude, Perplexity, Gemini, Copilot.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-Web
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+User-agent: Applebot-Extended
+Allow: /
+
+Sitemap: https://irmaosrobaski.com.br/sitemap.xml
