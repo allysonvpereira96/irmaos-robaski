@@ -68,7 +68,7 @@ const NAVBAR = (level = 0) => {
   <nav class="navbar">
     <div class="navbar-inner">
       <a href="${prefix}index.html" class="nav-logo">
-        <img src="${prefix}assets/img/placeholder.svg" alt="Irmãos Robaski" onerror="this.style.display='none'">
+        <img src="${prefix}assets/img/logo.png" alt="Irmãos Robaski" width="42" height="42">
         <div class="nav-logo-text">
           <strong>Irmãos Robaski</strong>
           <span>Atacado · Distribuição</span>
@@ -98,7 +98,7 @@ const FOOTER = (level = 0) => {
       <div class="footer-grid">
         <div class="footer-col">
           <div class="footer-brand">
-            <img src="${prefix}assets/img/placeholder.svg" alt="" onerror="this.style.display='none'">
+            <img src="${prefix}assets/img/logo-white.png" alt="" width="40" height="40">
             <strong>Irmãos Robaski</strong>
           </div>
           <p class="footer-about">Distribuidora atacadista com catálogo amplo de mercearia, bebidas, limpeza, descartáveis e embalagens.</p>
@@ -157,7 +157,7 @@ function paginaProduto(p, categoria, relacionados) {
   const imgSrc = p.imagem || '../assets/img/placeholder.svg';
   const imgAbsolute = p.imagem
     ? `${ORIGIN}/${p.imagem.replace(/^\.\.\//, '')}`
-    : `${ORIGIN}/assets/img/placeholder.svg`;
+    : `${ORIGIN}/assets/img/og-image.jpg`;
 
   // Schema.org Product
   const schemaProduct = {
@@ -265,7 +265,8 @@ function paginaProduto(p, categoria, relacionados) {
 
   ${HEAD_FONTS}
   <link rel="stylesheet" href="../assets/css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/img/placeholder.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png">
 
   <script type="application/ld+json">${JSON.stringify(schemaProduct)}</script>
   <script type="application/ld+json">${JSON.stringify(schemaBreadcrumb)}</script>
@@ -433,7 +434,8 @@ function paginaCategoria(cat, produtosCat) {
 
   ${HEAD_FONTS}
   <link rel="stylesheet" href="../assets/css/style.css">
-  <link rel="icon" type="image/svg+xml" href="../assets/img/placeholder.svg">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png">
 
   <script type="application/ld+json">${JSON.stringify(schemaItemList)}</script>
   <script type="application/ld+json">${JSON.stringify(schemaBreadcrumb)}</script>

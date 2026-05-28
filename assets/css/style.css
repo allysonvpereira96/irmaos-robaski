@@ -1,30 +1,35 @@
 /* ════════════════════════════════════════
    IRMÃOS ROBASKI — STYLE.CSS
-   Paleta default (pré-briefing): azul atacadista + verde WhatsApp
-   Substituir cores quando cliente passar identidade visual.
+   Paleta extraída do logo (verde-mata #004020) + accent dourado
+   evocando chimarrão/erva-mate (símbolo da marca).
 ════════════════════════════════════════ */
 
 :root {
-  /* Cores */
-  --brand:         #0B3B7C;       /* azul atacadista principal */
-  --brand-dark:    #082C5C;
-  --brand-light:   #1B4FA0;
-  --accent:        #F59E0B;       /* destaque (preço, badge) */
+  /* Cores — verde-mata do logo + dourado/cuia */
+  --brand:         #004020;       /* verde-mata profundo (cor exata do logo) */
+  --brand-dark:    #002A14;       /* hover, footer */
+  --brand-light:   #1A6238;       /* badges, accents secundários */
+  --brand-50:      #F2F7F4;       /* fundo super-suave esverdeado */
+
+  --accent:        #E8B547;       /* dourado/mostarda — cuia de chimarrão, calor */
+  --accent-dark:   #C9942F;
+  --accent-soft:   #F6E5B5;
+
   --whatsapp:      #25D366;
   --whatsapp-dark: #128C7E;
 
-  --text:          #1A1F2E;
-  --text-muted:    #5B6478;
-  --text-soft:     #8A95A8;
+  --text:          #0F1A14;
+  --text-muted:    #4A5A52;
+  --text-soft:     #7A8B82;
 
   --bg:            #FFFFFF;
-  --bg-soft:       #F6F8FB;
-  --bg-elev:       #FAFBFD;
-  --border:        #E3E8F0;
-  --border-soft:   #EEF2F7;
+  --bg-soft:       #F4F7F4;       /* esverdeado bem suave */
+  --bg-elev:       #FBFAF6;       /* creme bem suave, lembra papel */
+  --border:        #DDE4DE;
+  --border-soft:   #EAF0EB;
 
   --success:       #16A34A;
-  --danger:        #DC2626;
+  --danger:        #B91C1C;
 
   /* Tipografia */
   --font:          'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Arial, sans-serif;
@@ -101,7 +106,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
   outline: 0;
   border-color: var(--brand);
   background: #fff;
-  box-shadow: 0 0 0 3px rgba(11, 59, 124, 0.1);
+  box-shadow: 0 0 0 3px rgba(0, 64, 32, 0.12);
 }
 .nav-search svg {
   position: absolute; left: 14px; top: 50%; transform: translateY(-50%);
@@ -130,7 +135,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 .nav-cart-btn svg { width: 18px; height: 18px; }
 .nav-cart-count {
   position: absolute; top: -6px; right: -6px;
-  background: var(--accent); color: #fff;
+  background: var(--accent); color: var(--text);
   font-size: 11px; font-weight: 700;
   min-width: 20px; height: 20px;
   border-radius: 10px; padding: 0 6px;
@@ -155,7 +160,7 @@ input, select, textarea { font-family: inherit; font-size: inherit; }
 .hero::after {
   content: ''; position: absolute; right: -100px; bottom: -100px;
   width: 380px; height: 380px;
-  background: radial-gradient(circle, rgba(245,158,11,0.18) 0%, transparent 70%);
+  background: radial-gradient(circle, rgba(232,181,71,0.22) 0%, transparent 70%);
   border-radius: 50%;
 }
 .hero-inner { position: relative; z-index: 1; max-width: 720px; }
