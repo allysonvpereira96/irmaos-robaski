@@ -147,9 +147,8 @@ function paginaProduto(p, categoria, relacionados) {
     const partes = [
       p.nome,
       p.marca ? `Marca ${p.marca}` : null,
-      p.preco ? `R$ ${formatBRL(p.preco)}` : 'Sob consulta',
       `${categoria.titulo} no atacado Irmãos Robaski.`,
-      'Pedido pelo WhatsApp.',
+      'Pedido e cotação pelo WhatsApp.',
     ].filter(Boolean);
     return truncate(partes.join(' · '), 158);
   })();
@@ -159,7 +158,7 @@ function paginaProduto(p, categoria, relacionados) {
     ? `${ORIGIN}/${p.imagem.replace(/^\.\.\//, '')}`
     : `${ORIGIN}/assets/img/og-image.jpg`;
 
-  // Schema.org Product
+  // Schema.org Product — sem preço (atacado: preço sob consulta via WhatsApp)
   const schemaProduct = {
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -172,14 +171,6 @@ function paginaProduto(p, categoria, relacionados) {
     ...(p.marca ? { brand: { '@type': 'Brand', name: p.marca } } : {}),
     ...(p.ean ? { gtin13: p.ean } : {}),
     ...(p.descricaoExtra ? { description: p.descricaoExtra } : { description: desc }),
-    offers: {
-      '@type': 'Offer',
-      url,
-      priceCurrency: 'BRL',
-      ...(p.preco ? { price: p.preco.toFixed(2) } : {}),
-      availability: p.preco ? 'https://schema.org/InStock' : 'https://schema.org/InStoreOnly',
-      seller: { '@type': 'Organization', name: 'Irmãos Robaski' },
-    },
   };
 
   const schemaBreadcrumb = {
@@ -193,19 +184,11 @@ function paginaProduto(p, categoria, relacionados) {
     ],
   };
 
-  const precoBlock = p.preco
-    ? `
-        <div class="produto-detalhe-preco">
-          <div>
-            <div class="label">Preço de atacado</div>
-            <div class="valor">R$ ${formatBRL(p.preco)}</div>
-          </div>
-        </div>`
-    : `
+  const precoBlock = `
         <div class="produto-detalhe-preco">
           <div>
             <div class="label">Preço</div>
-            <div class="valor" style="font-size: 22px; color: var(--text-muted);">Sob consulta</div>
+            <div class="valor" style="font-size: 18px; color: var(--text-muted);">Consulte pelo WhatsApp</div>
           </div>
         </div>`;
 
@@ -220,9 +203,6 @@ function paginaProduto(p, categoria, relacionados) {
             const imgRel = r.imagem
               ? `../${r.imagem}`
               : '../assets/img/placeholder.svg';
-            const precoRel = r.preco
-              ? `<span class="real">R$</span><span class="valor">${formatBRL(r.preco)}</span>`
-              : '<span class="sob-consulta">Sob consulta</span>';
             return `
               <article class="produto-card">
                 <a class="produto-img" href="${r.slug}.html">
@@ -231,7 +211,6 @@ function paginaProduto(p, categoria, relacionados) {
                 <div class="produto-info">
                   ${r.marca ? `<span class="produto-marca">${escapeHTML(r.marca)}</span>` : ''}
                   <a class="produto-nome" href="${r.slug}.html">${escapeHTML(r.nome)}</a>
-                  <div class="produto-preco">${precoRel}</div>
                 </div>
               </article>`;
           }).join('')}
@@ -260,8 +239,6 @@ function paginaProduto(p, categoria, relacionados) {
   <meta property="og:description" content="${escapeAttr(desc)}">
   <meta property="og:image" content="${imgAbsolute}">
   <meta property="og:site_name" content="Irmãos Robaski">
-  <meta property="product:price:amount" content="${p.preco ? p.preco.toFixed(2) : ''}">
-  <meta property="product:price:currency" content="BRL">
 
   ${HEAD_FONTS}
   <link rel="stylesheet" href="../assets/css/style.css?v=2">
@@ -336,12 +313,12 @@ ${NAVBAR(1)}
   <script>
     /* dados do produto pro botão "Adicionar à lista" */
     window.__PRODUTO__ = ${JSON.stringify({
-      id: p.id, slug: p.slug, nome: p.nome, preco: p.preco,
+      id: p.id, slug: p.slug, nome: p.nome,
       unidade: p.unidade, imagem: p.imagem, categoriaHumana: p.categoriaHumana,
     })};
   </script>
   <script src="../assets/js/main.js"></script>
-  <script src="../assets/js/cart.js"></script>
+  <script src="../assets/js/cart.js?v=2"></script>
   <script>
     /* Bind do qty + add to cart */
     document.addEventListener('DOMContentLoaded', () => {
@@ -400,9 +377,6 @@ function paginaCategoria(cat, produtosCat) {
 
   const cardsHTML = produtosCat.map(p => {
     const imgSrc = p.imagem ? `../${p.imagem}` : '../assets/img/placeholder.svg';
-    const precoBlock = p.preco
-      ? `<span class="real">R$</span><span class="valor">${formatBRL(p.preco)}</span>`
-      : '<span class="sob-consulta">Sob consulta</span>';
     return `
       <article class="produto-card">
         <a class="produto-img" href="../p/${p.slug}.html">
@@ -411,7 +385,6 @@ function paginaCategoria(cat, produtosCat) {
         <div class="produto-info">
           ${p.marca ? `<span class="produto-marca">${escapeHTML(p.marca)}</span>` : ''}
           <a class="produto-nome" href="../p/${p.slug}.html">${escapeHTML(p.nome)}</a>
-          <div class="produto-preco">${precoBlock}</div>
         </div>
       </article>`;
   }).join('');
@@ -470,7 +443,7 @@ ${NAVBAR(1)}
   ${WPP_FLOAT}
 
   <script src="../assets/js/main.js"></script>
-  <script src="../assets/js/cart.js"></script>
+  <script src="../assets/js/cart.js?v=2"></script>
 </body>
 </html>`;
 }

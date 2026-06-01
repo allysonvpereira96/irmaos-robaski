@@ -28,8 +28,6 @@
       busca: '',
       categoria: 'todos',
       marca: '',
-      precoMin: null,
-      precoMax: null,
       sort: 'relevancia',
     },
     pagina: 1,
@@ -43,8 +41,6 @@
     els.busca         = document.getElementById('filtro-busca');
     els.categorias    = document.getElementById('filtro-categorias');
     els.marcas        = document.getElementById('filtro-marca');
-    els.precoMin      = document.getElementById('filtro-preco-min');
-    els.precoMax      = document.getElementById('filtro-preco-max');
     els.sort          = document.getElementById('filtro-sort');
     els.total         = document.getElementById('toolbar-total');
     els.label         = document.getElementById('toolbar-label');
@@ -128,15 +124,9 @@
       lista = lista.filter(p => p.marca === state.filtros.marca);
     }
 
-    // 4. preço
-    if (state.filtros.precoMin != null) lista = lista.filter(p => (p.preco || 0) >= state.filtros.precoMin);
-    if (state.filtros.precoMax != null) lista = lista.filter(p => (p.preco || 0) <= state.filtros.precoMax);
-
-    // 5. sort
+    // 4. sort
     const sort = state.filtros.sort;
-    if (sort === 'preco-asc') lista.sort((a, b) => (a.preco || Infinity) - (b.preco || Infinity));
-    else if (sort === 'preco-desc') lista.sort((a, b) => (b.preco || -1) - (a.preco || -1));
-    else if (sort === 'nome') lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
+    if (sort === 'nome') lista.sort((a, b) => a.nome.localeCompare(b.nome, 'pt-BR'));
     // 'relevancia' = mantém ordem do fuse ou do dataset
 
     state.filtered = lista;
@@ -198,9 +188,6 @@
   function cardHTML(p) {
     const imgSrc = p.imagem || 'assets/img/placeholder.svg';
     const cat = state.categorias.find(c => c.slug === p.categoriaHumana);
-    const precoBlock = p.preco
-      ? `<span class="real">R$</span><span class="valor">${window.formatBRL(p.preco)}</span>`
-      : '<span class="sob-consulta">Sob consulta</span>';
     return `
       <article class="produto-card">
         <a class="produto-img" href="p/${p.slug}.html">
@@ -210,7 +197,6 @@
         <div class="produto-info">
           ${p.marca ? `<span class="produto-marca">${escapeHTML(p.marca)}</span>` : ''}
           <a class="produto-nome" href="p/${p.slug}.html">${escapeHTML(p.nome)}</a>
-          <div class="produto-preco">${precoBlock}</div>
         </div>
         <div class="produto-actions">
           <button class="btn-add-cart" data-add="${p.id}">
@@ -276,14 +262,6 @@
         aplicarFiltros();
       });
     }
-    const pcDeb = debounce(() => {
-      state.filtros.precoMin = els.precoMin.value ? parseFloat(els.precoMin.value) : null;
-      state.filtros.precoMax = els.precoMax.value ? parseFloat(els.precoMax.value) : null;
-      state.pagina = 1;
-      aplicarFiltros();
-    }, 280);
-    if (els.precoMin) els.precoMin.addEventListener('input', pcDeb);
-    if (els.precoMax) els.precoMax.addEventListener('input', pcDeb);
     if (els.sort) {
       els.sort.addEventListener('change', () => {
         state.filtros.sort = els.sort.value;
@@ -292,12 +270,10 @@
     }
     if (els.limparFiltros) {
       els.limparFiltros.addEventListener('click', () => {
-        state.filtros = { busca: '', categoria: 'todos', marca: '', precoMin: null, precoMax: null, sort: 'relevancia' };
+        state.filtros = { busca: '', categoria: 'todos', marca: '', sort: 'relevancia' };
         state.pagina = 1;
         if (els.busca) els.busca.value = '';
         if (els.marcas) els.marcas.value = '';
-        if (els.precoMin) els.precoMin.value = '';
-        if (els.precoMax) els.precoMax.value = '';
         if (els.sort) els.sort.value = 'relevancia';
         els.categorias.querySelectorAll('.cat-opcao').forEach((b, i) => b.classList.toggle('ativo', i === 0));
         aplicarFiltros();

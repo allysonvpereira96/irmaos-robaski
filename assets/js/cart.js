@@ -105,20 +105,14 @@
       const items = api.getItems();
       if (!items.length) return;
 
-      const linhas = items.map(({ produto, qtd }) => {
-        const subtotal = (produto.preco || 0) * qtd;
-        const precoStr = produto.preco ? ` (${window.formatBRLfull(subtotal)})` : ' (sob consulta)';
-        return `• ${qtd}x ${produto.nome}${precoStr}`;
-      });
+      const linhas = items.map(({ produto, qtd }) => `• ${qtd}x ${produto.nome}`);
 
-      const totalStr = api.getTotal() ? `\n\nTotal estimado: *${window.formatBRLfull(api.getTotal())}*` : '';
       const msg = [
         'Olá! Gostaria de fazer um pedido na Irmãos Robaski:',
         '',
         ...linhas,
-        totalStr,
         '',
-        '_Preços e disponibilidade sujeitos a confirmação._',
+        '_Aguardo confirmação de disponibilidade e preço._',
       ].join('\n');
 
       const url = `https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(msg)}`;
@@ -195,17 +189,12 @@
     }
 
     itemsEl.innerHTML = items.map(({ produto, qtd }) => {
-      const subtotal = (produto.preco || 0) * qtd;
       const imgSrc = produto.imagem || 'assets/img/placeholder.svg';
-      const precoLabel = produto.preco
-        ? window.formatBRLfull(subtotal)
-        : 'Sob consulta';
       return `
         <div class="cart-item" data-id="${produto.id}">
           <div class="cart-item-img"><img src="${imgSrc}" alt="" loading="lazy"></div>
           <div class="cart-item-info">
             <div class="cart-item-nome">${produto.nome}</div>
-            <div class="cart-item-preco">${precoLabel}</div>
             <div class="cart-item-qty">
               <button data-act="dec" aria-label="Diminuir">−</button>
               <input type="number" min="1" value="${qtd}" data-qty-input>
@@ -217,17 +206,18 @@
       `;
     }).join('');
 
+    const totalItens = items.reduce((s, x) => s + x.qtd, 0);
     footerEl.innerHTML = `
       <div class="cart-total">
-        <span class="label">Total estimado</span>
-        <span class="valor">${window.formatBRLfull(api.getTotal()) || '—'}</span>
+        <span class="label">Total de itens</span>
+        <span class="valor">${totalItens}</span>
       </div>
       <button class="btn btn-whatsapp btn-block btn-lg" data-act="send">
         <svg viewBox="0 0 24 24" fill="currentColor"><path d="M17.5 14.4c-.3-.1-1.8-.9-2-1-.3-.1-.5-.1-.7.1-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.1-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6.1-.1.3-.3.4-.5l.3-.5c.1-.2 0-.4 0-.5l-.9-2.2c-.2-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.8-.7 2-1.4.2-.7.2-1.3.2-1.4-.1-.1-.3-.2-.6-.3M12 22a10 10 0 1 1 0-20 10 10 0 0 1 0 20"/></svg>
-        Enviar pedido pelo WhatsApp
+        Enviar lista pelo WhatsApp
       </button>
       <div class="cart-disclaimer">
-        Preços e disponibilidade estão sujeitos a confirmação pelo vendedor. Sua lista será enviada como mensagem única.
+        O vendedor vai confirmar disponibilidade, preço e prazo de entrega após receber a sua lista.
       </div>
     `;
 

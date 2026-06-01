@@ -90,14 +90,6 @@
             </select>
           </div>
 
-          <div class="filtro-grupo">
-            <h4>Faixa de Preço (R$)</h4>
-            <div class="faixa-preco-input">
-              <input type="number" id="filtro-preco-min" placeholder="Mín" min="0" step="0.5">
-              <input type="number" id="filtro-preco-max" placeholder="Máx" min="0" step="0.5">
-            </div>
-          </div>
-
           <div class="filtro-grupo" style="border-top: 1px solid var(--border); padding-top: 18px;">
             <button class="btn btn-outline btn-block" id="limpar-filtros">Limpar filtros</button>
           </div>
@@ -114,8 +106,6 @@
               <select id="filtro-sort">
                 <option value="relevancia">Mais relevantes</option>
                 <option value="nome">Nome (A–Z)</option>
-                <option value="preco-asc">Menor preço</option>
-                <option value="preco-desc">Maior preço</option>
               </select>
             </div>
           </div>
@@ -171,7 +161,7 @@
   </a>
 
   <script src="assets/js/main.js"></script>
-  <script src="assets/js/cart.js"></script>
-  <script src="assets/js/catalogo.js" defer></script>
+  <script src="assets/js/cart.js?v=2"></script>
+  <script src="assets/js/catalogo.js?v=2" defer></script>
 </body>
 </html>
