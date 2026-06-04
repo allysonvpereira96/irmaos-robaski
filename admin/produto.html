@@ -1,0 +1,266 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Editar Produto · Admin Irmãos Robaski</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2">
+  <link rel="stylesheet" href="admin.css?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+</head>
+<body>
+  <div class="admin-shell">
+
+    <header class="admin-header">
+      <div class="left">
+        <img src="../assets/img/logo-white.png" class="logo" alt="Logo">
+        <h1 id="page-title">Novo Produto<small>Painel · Irmãos Robaski</small></h1>
+      </div>
+      <div class="right">
+        <a href="./" class="btn-logout">‹ Voltar</a>
+      </div>
+    </header>
+
+    <main class="admin-main">
+      <div class="form-wrap">
+
+        <!-- Upload de foto -->
+        <div style="margin-bottom: 24px;">
+          <label style="font-size: 11px; font-weight: 700; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); margin-bottom: 4px; display: block;">Foto do produto</label>
+          <div class="upload-zone" id="upload-zone">
+            <input type="file" id="file-input" accept="image/png,image/jpeg,image/webp">
+            <img id="preview" style="display: none;" alt="">
+            <div id="upload-placeholder">
+              <div class="placeholder-icon">📷</div>
+              <div class="label">Clique ou arraste a foto aqui</div>
+              <div class="help">PNG, JPG ou WebP · até 8MB · será otimizada automaticamente</div>
+            </div>
+          </div>
+          <input type="hidden" id="imagem_url" name="imagem_url">
+        </div>
+
+        <form id="form-produto">
+          <div class="form-grid">
+            <div class="full">
+              <label for="nome">Nome do produto *</label>
+              <input id="nome" name="nome" type="text" required maxlength="200">
+            </div>
+
+            <div>
+              <label for="categoria_slug">Categoria *</label>
+              <select id="categoria_slug" name="categoria_slug" required>
+                <option value="">Selecione...</option>
+              </select>
+            </div>
+
+            <div>
+              <label for="marca">Marca</label>
+              <input id="marca" name="marca" type="text" maxlength="60">
+              <div class="help">Ex: ODERICH, DORI, FUGINI...</div>
+            </div>
+
+            <div>
+              <label for="id">Código (SKU)</label>
+              <input id="id" name="id" type="text" maxlength="40" pattern="[a-zA-Z0-9_-]+">
+              <div class="help">Em branco = gera automaticamente</div>
+            </div>
+
+            <div>
+              <label for="ean">EAN / código de barras</label>
+              <input id="ean" name="ean" type="text" maxlength="14" inputmode="numeric">
+            </div>
+
+            <div>
+              <label for="unidade">Unidade</label>
+              <input id="unidade" name="unidade" type="text" maxlength="40" placeholder="Ex: Unidade, Caixa, Fardo">
+            </div>
+
+            <div>
+              <label for="ncm">NCM</label>
+              <input id="ncm" name="ncm" type="text" maxlength="10" inputmode="numeric">
+            </div>
+
+            <div class="full">
+              <label for="descricao_extra">Descrição adicional</label>
+              <textarea id="descricao_extra" name="descricao_extra" rows="3" maxlength="500"></textarea>
+            </div>
+
+            <div>
+              <label for="ativo">Status</label>
+              <select id="ativo" name="ativo">
+                <option value="true">Ativo (aparece no site)</option>
+                <option value="false">Inativo (oculto do site)</option>
+              </select>
+            </div>
+          </div>
+
+          <div class="form-actions">
+            <button type="button" id="btn-excluir" class="btn btn-outline" style="color: var(--danger); border-color: var(--danger); display: none;">Excluir definitivamente</button>
+            <div class="grow"></div>
+            <a href="./" class="btn btn-outline">Cancelar</a>
+            <button type="submit" class="btn btn-primary" id="btn-salvar">Salvar</button>
+          </div>
+        </form>
+
+      </div>
+    </main>
+  </div>
+
+  <script type="module">
+    import { api, toast, escapeHTML, qs } from './admin.js';
+    import { upload } from 'https://esm.sh/@vercel/blob@0.27.3/client?bundle';
+
+    const id = qs('id');
+    const isEdit = !!id;
+    let produto = null;
+
+    document.getElementById('page-title').firstChild.textContent = isEdit ? 'Editar Produto' : 'Novo Produto';
+
+    /* ─── Carrega categorias ─── */
+    async function loadCategorias() {
+      const { rows } = await api('/api/admin/categorias');
+      const sel = document.getElementById('categoria_slug');
+      rows.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.slug;
+        opt.textContent = c.titulo;
+        sel.appendChild(opt);
+      });
+    }
+
+    /* ─── Carrega produto se for edição ─── */
+    async function loadProduto() {
+      if (!isEdit) return;
+      try {
+        const { produto: p } = await api('/api/admin/produto?id=' + encodeURIComponent(id));
+        produto = p;
+        ['nome', 'marca', 'id', 'ean', 'unidade', 'ncm', 'descricao_extra'].forEach(k => {
+          const el = document.getElementById(k);
+          if (el) el.value = p[k] ?? '';
+        });
+        document.getElementById('categoria_slug').value = p.categoria_slug || '';
+        document.getElementById('ativo').value = p.ativo ? 'true' : 'false';
+        document.getElementById('id').readOnly = true;
+        document.getElementById('id').style.opacity = '0.7';
+        if (p.imagem_url) showPreview(p.imagem_url);
+        document.getElementById('imagem_url').value = p.imagem_url || '';
+        document.getElementById('btn-excluir').style.display = 'inline-flex';
+      } catch (e) {
+        toast(e.message, 'error');
+      }
+    }
+
+    /* ─── Upload imagem ─── */
+    const zone = document.getElementById('upload-zone');
+    const fileInput = document.getElementById('file-input');
+    const preview = document.getElementById('preview');
+    const placeholder = document.getElementById('upload-placeholder');
+
+    function showPreview(url) {
+      preview.src = url;
+      preview.style.display = 'block';
+      placeholder.style.display = 'none';
+    }
+
+    zone.addEventListener('click', e => {
+      if (e.target !== fileInput) fileInput.click();
+    });
+    zone.addEventListener('dragover', e => { e.preventDefault(); zone.classList.add('dragover'); });
+    zone.addEventListener('dragleave', () => zone.classList.remove('dragover'));
+    zone.addEventListener('drop', e => {
+      e.preventDefault(); zone.classList.remove('dragover');
+      const f = e.dataTransfer.files?.[0]; if (f) handleFile(f);
+    });
+    fileInput.addEventListener('change', e => {
+      const f = e.target.files?.[0]; if (f) handleFile(f);
+    });
+
+    async function handleFile(file) {
+      if (file.size > 8 * 1024 * 1024) {
+        toast('Arquivo muito grande (máx 8MB)', 'error');
+        return;
+      }
+      zone.classList.add('uploading');
+      placeholder.style.display = 'block';
+      placeholder.innerHTML = '<span class="spinner"></span> Enviando...';
+      try {
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const filename = `produtos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const blob = await upload(filename, file, {
+          access: 'public',
+          handleUploadUrl: '/api/admin/upload',
+        });
+        showPreview(blob.url);
+        document.getElementById('imagem_url').value = blob.url;
+        toast('Imagem enviada', 'success');
+      } catch (e) {
+        toast('Falha no upload: ' + e.message, 'error');
+        placeholder.innerHTML = '<div class="placeholder-icon">📷</div><div class="label">Clique ou arraste a foto aqui</div><div class="help">PNG, JPG ou WebP · até 8MB</div>';
+      } finally {
+        zone.classList.remove('uploading');
+      }
+    }
+
+    /* ─── Submit ─── */
+    document.getElementById('form-produto').addEventListener('submit', async e => {
+      e.preventDefault();
+      const btn = document.getElementById('btn-salvar');
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Salvando...';
+
+      const fd = new FormData(e.target);
+      const body = {
+        nome: fd.get('nome'),
+        categoria_slug: fd.get('categoria_slug'),
+        marca: fd.get('marca') || null,
+        ean: fd.get('ean') || null,
+        unidade: fd.get('unidade') || null,
+        ncm: fd.get('ncm') || null,
+        descricao_extra: fd.get('descricao_extra') || null,
+        imagem_url: document.getElementById('imagem_url').value || null,
+        ativo: fd.get('ativo') === 'true',
+      };
+
+      try {
+        if (isEdit) {
+          await api('/api/admin/produto?id=' + encodeURIComponent(id), { method: 'PATCH', body });
+          toast('Produto atualizado', 'success');
+        } else {
+          const idValue = fd.get('id') || '';
+          if (idValue) body.id = idValue;
+          const slug = fd.get('nome').toLowerCase().normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+          body.slug = slug;
+          const r = await api('/api/admin/produtos', { method: 'POST', body });
+          toast('Produto criado', 'success');
+          setTimeout(() => location.href = 'produto.html?id=' + encodeURIComponent(r.produto.id), 600);
+          return;
+        }
+        setTimeout(() => location.href = './', 600);
+      } catch (e) {
+        toast(e.message, 'error');
+        btn.disabled = false;
+        btn.textContent = 'Salvar';
+      }
+    });
+
+    /* ─── Excluir definitivo ─── */
+    document.getElementById('btn-excluir').addEventListener('click', async () => {
+      if (!confirm(`Excluir DEFINITIVAMENTE o produto "${produto?.nome}"?\n\nEssa ação não pode ser desfeita.`)) return;
+      try {
+        await api('/api/admin/produto?id=' + encodeURIComponent(id) + '&hard=1', { method: 'DELETE' });
+        toast('Produto excluído', 'success');
+        setTimeout(() => location.href = './', 500);
+      } catch (e) {
+        toast(e.message, 'error');
+      }
+    });
+
+    /* ─── Boot ─── */
+    loadCategorias().then(loadProduto);
+  </script>
+</body>
+</html>

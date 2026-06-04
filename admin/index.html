@@ -1,0 +1,267 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Admin · Catálogo Irmãos Robaski</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css?v=2">
+  <link rel="stylesheet" href="admin.css?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+</head>
+<body>
+
+  <div class="admin-shell">
+
+    <header class="admin-header">
+      <div class="left">
+        <img src="../assets/img/logo-white.png" class="logo" alt="Logo">
+        <h1>Painel Administrativo<small>Gestão de produtos · Irmãos Robaski</small></h1>
+      </div>
+      <div class="right">
+        <span class="user-chip" id="user-chip"></span>
+        <button class="btn-rebuild" id="btn-rebuild" title="Aplicar mudanças no site público">
+          ↻ Aplicar no site
+        </button>
+        <button class="btn-logout" id="btn-logout">Sair</button>
+      </div>
+    </header>
+
+    <main class="admin-main">
+
+      <!-- Stats -->
+      <div class="stats-row" id="stats-row">
+        <div class="stat-card"><div class="label">Produtos ativos</div><div class="value" id="stat-ativos">—</div></div>
+        <div class="stat-card"><div class="label">Inativos</div><div class="value" id="stat-inativos">—</div></div>
+        <div class="stat-card"><div class="label">Sem foto</div><div class="value" id="stat-semfoto">—</div></div>
+        <div class="stat-card"><div class="label">Categorias</div><div class="value" id="stat-cats">—</div></div>
+      </div>
+
+      <!-- Tools -->
+      <div class="tools-row">
+        <input type="search" id="busca" placeholder="Buscar por nome, código ou EAN...">
+        <select id="filtro-cat">
+          <option value="">Todas as categorias</option>
+        </select>
+        <select id="filtro-ativo">
+          <option value="1">Só ativos</option>
+          <option value="0">Só inativos</option>
+          <option value="">Todos (ativos + inativos)</option>
+        </select>
+        <div class="grow"></div>
+        <a href="produto.html" class="btn-add">+ Novo produto</a>
+      </div>
+
+      <!-- Tabela -->
+      <div class="admin-table-wrap">
+        <table class="admin-table">
+          <thead>
+            <tr>
+              <th class="col-img">Foto</th>
+              <th>Produto</th>
+              <th class="col-meta-hide">Categoria</th>
+              <th class="col-meta-hide">Marca</th>
+              <th>Status</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody id="tbody">
+            <tr><td colspan="6"><div class="empty"><span class="spinner"></span> Carregando produtos...</div></td></tr>
+          </tbody>
+        </table>
+      </div>
+
+      <div class="paginacao" id="paginacao"></div>
+
+      <p style="font-size: 11px; color: var(--text-soft); text-align: center; margin-top: 12px;">
+        Total de produtos: <span id="total-info">—</span> ·
+        Última atualização do site: clique em <strong>"Aplicar no site"</strong> para enviar suas mudanças (~30s).
+      </p>
+
+    </main>
+  </div>
+
+  <script type="module">
+    import { api, toast, escapeHTML, debounce } from './admin.js';
+
+    const state = {
+      page: 1, size: 50, q: '', cat: '', ativo: '1',
+      categorias: [],
+    };
+
+    /* ─── Header user info + logout + rebuild ─── */
+    async function initHeader() {
+      try {
+        const { user } = await api('/api/admin/me');
+        document.getElementById('user-chip').textContent = user.nome;
+      } catch { /* api() já redireciona se 401 */ }
+    }
+    document.getElementById('btn-logout').addEventListener('click', async () => {
+      try { await api('/api/admin/logout', { method: 'POST' }); } catch {}
+      location.href = 'login.html';
+    });
+    document.getElementById('btn-rebuild').addEventListener('click', async (e) => {
+      const btn = e.currentTarget;
+      btn.disabled = true;
+      btn.innerHTML = '<span class="spinner"></span> Disparando rebuild...';
+      try {
+        const r = await api('/api/admin/rebuild', { method: 'POST' });
+        toast(r.message || 'Rebuild disparado', 'success');
+      } catch (e) {
+        toast(e.message, 'error');
+      } finally {
+        setTimeout(() => {
+          btn.disabled = false;
+          btn.innerHTML = '↻ Aplicar no site';
+        }, 5000);
+      }
+    });
+
+    /* ─── Stats ─── */
+    async function loadStats() {
+      try {
+        const s = await api('/api/admin/stats');
+        document.getElementById('stat-ativos').textContent = s.total.toLocaleString('pt-BR');
+        document.getElementById('stat-inativos').textContent = s.inativos.toLocaleString('pt-BR');
+        document.getElementById('stat-semfoto').textContent = s.semfoto.toLocaleString('pt-BR');
+        document.getElementById('stat-cats').textContent = s.cats;
+      } catch {}
+    }
+
+    /* ─── Filtros (categorias) ─── */
+    async function loadCategorias() {
+      try {
+        const { rows } = await api('/api/admin/categorias');
+        state.categorias = rows;
+        const sel = document.getElementById('filtro-cat');
+        rows.forEach(c => {
+          const opt = document.createElement('option');
+          opt.value = c.slug;
+          opt.textContent = `${c.titulo} (${c.count})`;
+          sel.appendChild(opt);
+        });
+      } catch {}
+    }
+
+    /* ─── Tabela ─── */
+    async function loadProdutos() {
+      const tbody = document.getElementById('tbody');
+      tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><span class="spinner"></span> Carregando...</div></td></tr>`;
+      try {
+        const params = new URLSearchParams({
+          page: state.page, size: state.size,
+          ...(state.q ? { q: state.q } : {}),
+          ...(state.cat ? { cat: state.cat } : {}),
+          ...(state.ativo !== '' ? { ativo: state.ativo } : {}),
+        });
+        const data = await api('/api/admin/produtos?' + params);
+        renderRows(data.rows);
+        renderPaginacao(data.pages);
+        document.getElementById('total-info').textContent = data.total.toLocaleString('pt-BR');
+      } catch (e) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><strong>Erro</strong>${escapeHTML(e.message)}</div></td></tr>`;
+      }
+    }
+
+    function catTitulo(slug) {
+      return state.categorias.find(c => c.slug === slug)?.titulo || slug;
+    }
+
+    function renderRows(rows) {
+      const tbody = document.getElementById('tbody');
+      if (!rows.length) {
+        tbody.innerHTML = `<tr><td colspan="6"><div class="empty"><strong>Nenhum produto encontrado</strong>Mude os filtros ou crie um novo.</div></td></tr>`;
+        return;
+      }
+      tbody.innerHTML = rows.map(r => `
+        <tr>
+          <td class="col-img">
+            ${r.imagem_url
+              ? `<img src="${escapeHTML(r.imagem_url)}" alt="" loading="lazy">`
+              : `<div class="placeholder">sem foto</div>`}
+          </td>
+          <td>
+            <span class="nome">${escapeHTML(r.nome)}</span>
+            <span class="meta">Cód. ${escapeHTML(r.id)} ${r.ean ? '· EAN ' + escapeHTML(r.ean) : ''}</span>
+          </td>
+          <td class="col-meta-hide">${escapeHTML(catTitulo(r.categoria_slug))}</td>
+          <td class="col-meta-hide">${escapeHTML(r.marca || '—')}</td>
+          <td><span class="badge ${r.ativo ? 'ativo' : 'inativo'}">${r.ativo ? 'ATIVO' : 'INATIVO'}</span></td>
+          <td class="actions">
+            <a href="produto.html?id=${encodeURIComponent(r.id)}"><button>Editar</button></a>
+            <button class="danger" data-del="${encodeURIComponent(r.id)}" data-nome="${escapeHTML(r.nome)}">Excluir</button>
+          </td>
+        </tr>
+      `).join('');
+
+      tbody.querySelectorAll('button[data-del]').forEach(btn => {
+        btn.addEventListener('click', async () => {
+          const id = decodeURIComponent(btn.getAttribute('data-del'));
+          const nome = btn.getAttribute('data-nome');
+          if (!confirm(`Desativar o produto "${nome}"?\n\nEle não aparece mais no site, mas fica salvo (pode reativar depois).`)) return;
+          try {
+            await api('/api/admin/produto?id=' + encodeURIComponent(id), { method: 'DELETE' });
+            toast('Produto desativado', 'success');
+            loadProdutos();
+            loadStats();
+          } catch (e) {
+            toast(e.message, 'error');
+          }
+        });
+      });
+    }
+
+    function renderPaginacao(totalPages) {
+      const cont = document.getElementById('paginacao');
+      if (totalPages <= 1) { cont.innerHTML = ''; return; }
+      const cur = state.page;
+      const btns = [`<button data-p="prev" ${cur === 1 ? 'disabled' : ''}>‹</button>`];
+      const set = new Set([1, totalPages, cur, cur - 1, cur + 1]);
+      const sorted = [...set].filter(n => n >= 1 && n <= totalPages).sort((a, b) => a - b);
+      let last = 0;
+      for (const n of sorted) {
+        if (last && n - last > 1) btns.push('<button disabled>…</button>');
+        btns.push(`<button data-p="${n}" class="${n === cur ? 'ativo' : ''}">${n}</button>`);
+        last = n;
+      }
+      btns.push(`<button data-p="next" ${cur === totalPages ? 'disabled' : ''}>›</button>`);
+      cont.innerHTML = btns.join('');
+      cont.querySelectorAll('button[data-p]:not(:disabled)').forEach(b => {
+        b.addEventListener('click', () => {
+          const v = b.getAttribute('data-p');
+          if (v === 'prev') state.page = Math.max(1, state.page - 1);
+          else if (v === 'next') state.page = Math.min(totalPages, state.page + 1);
+          else state.page = parseInt(v, 10);
+          loadProdutos();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    }
+
+    /* ─── Binds dos filtros ─── */
+    document.getElementById('busca').addEventListener('input', debounce(e => {
+      state.q = e.target.value.trim();
+      state.page = 1;
+      loadProdutos();
+    }, 280));
+    document.getElementById('filtro-cat').addEventListener('change', e => {
+      state.cat = e.target.value;
+      state.page = 1;
+      loadProdutos();
+    });
+    document.getElementById('filtro-ativo').addEventListener('change', e => {
+      state.ativo = e.target.value;
+      state.page = 1;
+      loadProdutos();
+    });
+
+    /* ─── Boot ─── */
+    initHeader();
+    loadStats();
+    loadCategorias().then(loadProdutos);
+  </script>
+</body>
+</html>

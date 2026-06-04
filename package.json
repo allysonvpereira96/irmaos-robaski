@@ -8,12 +8,27 @@
     "extract": "node build/extract-from-xlsx.mjs",
     "map-cats": "node build/mapear-categorias.mjs",
     "scrape-imgs": "node build/scraper-imagens.mjs",
+    "extract-db": "node db/extract-to-json.mjs",
+    "init-db": "node db/init.mjs",
+    "migrate": "node db/migrate-from-json.mjs",
+    "seed-admin": "node db/seed-admin.mjs",
+    "upload-imgs": "node db/upload-imagens-blob.mjs",
     "build": "node build/build-site.mjs",
+    "build:prod": "npm run extract-db && npm run build",
+    "pdf": "node build/gerar-catalogo-pdf.mjs",
     "all": "npm run extract && npm run map-cats && npm run build"
   },
   "dependencies": {
-    "xlsx": "^0.18.5",
+    "@neondatabase/serverless": "^0.10.4",
+    "@vercel/blob": "^0.27.3",
+    "bcryptjs": "^2.4.3",
+    "dotenv": "^16.4.7",
+    "fuse.js": "^7.0.0",
+    "jsonwebtoken": "^9.0.2",
     "sharp": "^0.33.5",
-    "fuse.js": "^7.0.0"
+    "xlsx": "^0.18.5"
+  },
+  "devDependencies": {
+    "puppeteer": "^25.1.0"
   }
 }

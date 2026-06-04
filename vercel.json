@@ -1,9 +1,11 @@
 {
   "cleanUrls": true,
   "trailingSlash": false,
-  "buildCommand": null,
-  "installCommand": null,
+  "buildCommand": "node build/vercel-build.mjs",
   "outputDirectory": ".",
+  "functions": {
+    "api/admin/*.js": { "memory": 512, "maxDuration": 30 }
+  },
   "headers": [
     {
       "source": "/(.*)",

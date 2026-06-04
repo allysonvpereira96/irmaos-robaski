@@ -4,6 +4,7 @@ node_modules/
 # Outputs intermediários do pipeline de build (regerados em qualquer build)
 data/produtos-raw.json
 data/relatorio-*.csv
+build/.pdf-cache/
 
 # Logs e tmp
 *.log
@@ -21,3 +22,6 @@ Thumbs.db
 .env
 .env.*
 !.env.example
+
+# Vercel
+.vercel/

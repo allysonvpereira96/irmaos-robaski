@@ -5,6 +5,12 @@ User-agent: *
 Allow: /
 Disallow: /build/
 Disallow: /data/
+Disallow: /db/
+Disallow: /lib/
+Disallow: /admin
+Disallow: /admin/
+Disallow: /api
+Disallow: /api/
 Disallow: /audit
 Disallow: /audit.html
 
