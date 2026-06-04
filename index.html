@@ -21,38 +21,136 @@
 
   <!-- Twitter -->
   <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Irmãos Robaski — Atacado de mercearia, limpeza, bebidas e embalagens">
+  <meta name="twitter:description" content="Mais de 1.900 produtos em catálogo digital. Monte sua lista e envie pelo WhatsApp.">
+  <meta name="twitter:image" content="https://irmaosrobaski.com.br/assets/img/og-image.jpg">
 
-  <!-- Fonts -->
+  <!-- Fonts (preload pra LCP) -->
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <!-- Styles -->
-  <link rel="stylesheet" href="assets/css/style.css?v=2">
+  <link rel="stylesheet" href="assets/css/style.css?v=3">
 
   <!-- Favicon -->
   <link rel="icon" type="image/png" sizes="32x32" href="assets/img/favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="assets/img/apple-touch-icon.png">
 
-  <!-- Schema.org LocalBusiness — preencher após briefing -->
+  <!-- Schema.org @graph com 4 nós: Organization, LocalBusiness, WebSite (SearchAction), FAQPage -->
   <script type="application/ld+json">
   {
     "@context": "https://schema.org",
-    "@type": "LocalBusiness",
-    "@id": "https://irmaosrobaski.com.br/#business",
-    "name": "Irmãos Robaski",
-    "description": "Distribuidora atacadista de mercearia, bebidas, limpeza, descartáveis, embalagens e utilidades.",
-    "url": "https://irmaosrobaski.com.br/",
-    "image": "https://irmaosrobaski.com.br/assets/img/og-image.jpg",
-    "priceRange": "$$",
-    "address": {
-      "@type": "PostalAddress",
-      "addressCountry": "BR"
-    }
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "https://irmaosrobaski.com.br/#org",
+        "name": "Irmãos Robaski Ltda",
+        "alternateName": "Irmãos Robaski",
+        "url": "https://irmaosrobaski.com.br/",
+        "logo": "https://irmaosrobaski.com.br/assets/img/logo.png",
+        "image": "https://irmaosrobaski.com.br/assets/img/og-image.jpg",
+        "description": "Distribuidora atacadista de mercearia, bebidas, limpeza, descartáveis, embalagens e utilidades, com mais de 1.900 SKUs e pedido pelo WhatsApp."
+      },
+      {
+        "@type": ["LocalBusiness", "Store"],
+        "@id": "https://irmaosrobaski.com.br/#business",
+        "name": "Irmãos Robaski — Distribuidora Atacadista",
+        "description": "Atacado completo de mercearia, bebidas, limpeza, embalagens e descartáveis para padarias, lanchonetes, restaurantes, mercados de bairro e comércios em geral.",
+        "url": "https://irmaosrobaski.com.br/",
+        "image": "https://irmaosrobaski.com.br/assets/img/og-image.jpg",
+        "logo": "https://irmaosrobaski.com.br/assets/img/logo.png",
+        "priceRange": "$$",
+        "currenciesAccepted": "BRL",
+        "paymentAccepted": "Pix, Boleto, Cartão, Dinheiro",
+        "address": {
+          "@type": "PostalAddress",
+          "addressCountry": "BR"
+        },
+        "parentOrganization": { "@id": "https://irmaosrobaski.com.br/#org" },
+        "areaServed": {
+          "@type": "AdministrativeArea",
+          "name": "Rio Grande do Sul"
+        },
+        "knowsAbout": [
+          "Atacado de mercearia",
+          "Distribuição de bebidas",
+          "Embalagens descartáveis",
+          "Produtos de limpeza para revenda",
+          "Suprimentos para padaria e lanchonete",
+          "Erva-mate e chimarrão"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "https://irmaosrobaski.com.br/#website",
+        "url": "https://irmaosrobaski.com.br/",
+        "name": "Irmãos Robaski",
+        "inLanguage": "pt-BR",
+        "publisher": { "@id": "https://irmaosrobaski.com.br/#org" },
+        "potentialAction": {
+          "@type": "SearchAction",
+          "target": {
+            "@type": "EntryPoint",
+            "urlTemplate": "https://irmaosrobaski.com.br/produtos.html?q={search_term_string}"
+          },
+          "query-input": "required name=search_term_string"
+        }
+      },
+      {
+        "@type": "FAQPage",
+        "@id": "https://irmaosrobaski.com.br/#faq",
+        "mainEntity": [
+          {
+            "@type": "Question",
+            "name": "Como faço meu pedido na Irmãos Robaski?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Navegue pelo catálogo digital, adicione os produtos com a quantidade desejada na sua lista e clique em 'Enviar pelo WhatsApp'. Sua lista chega formatada pelo nosso vendedor, que confirma estoque, preço e prazo de entrega."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Tem pedido mínimo?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Sim, trabalhamos com pedido mínimo para atacado e revenda. O valor exato varia conforme a região de entrega — nosso vendedor confirma assim que recebe a sua lista pelo WhatsApp."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Quais formas de pagamento vocês aceitam?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Aceitamos Pix, boleto, cartão de crédito/débito e dinheiro. Condições especiais para revenda são combinadas direto com o vendedor."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Quanto tempo demora a entrega?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "O prazo depende da região e do volume do pedido. Na maior parte das cidades atendemos no mesmo dia ou dia seguinte. O vendedor confirma o prazo exato após receber sua lista."
+            }
+          },
+          {
+            "@type": "Question",
+            "name": "Posso comprar no varejo (uma unidade só)?",
+            "acceptedAnswer": {
+              "@type": "Answer",
+              "text": "Não — a Irmãos Robaski trabalha exclusivamente com atacado e revenda. Vendemos por fardo, caixa ou volume mínimo conforme cada categoria."
+            }
+          }
+        ]
+      }
+    ]
   }
   </script>
 </head>
 <body>
+
+  <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
 
   <!-- ════════════════════════════════════════ NAVBAR ════════════════════════════════════════ -->
   <nav class="navbar">
@@ -70,11 +168,12 @@
         <input type="search" placeholder="Buscar produto..." aria-label="Buscar produto">
       </form>
 
-      <ul class="nav-menu">
-        <li><a href="index.html" class="active">Home</a></li>
+      <ul class="nav-menu" id="nav-menu">
+        <li><a href="index.html" class="active" aria-current="page">Home</a></li>
         <li><a href="produtos.html">Catálogo</a></li>
         <li><a href="#categorias">Categorias</a></li>
         <li><a href="#sobre">Sobre</a></li>
+        <li><a href="#faq">FAQ</a></li>
       </ul>
 
       <button class="nav-cart-btn" data-open-cart aria-label="Abrir carrinho">
@@ -89,6 +188,8 @@
     </div>
   </nav>
 
+  <main id="main-content">
+
   <!-- ════════════════════════════════════════ HERO ════════════════════════════════════════ -->
   <section class="hero">
     <div class="container hero-inner">
@@ -100,8 +201,8 @@
           Ver catálogo completo
           <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
         </a>
-        <a href="#categorias" class="btn btn-outline btn-lg" style="border-color: rgba(255,255,255,0.5); color: #fff;">
-          Categorias
+        <a href="#categorias" class="btn-outline-light btn-lg">
+          Ver categorias
         </a>
       </div>
 
@@ -160,9 +261,60 @@
     <div class="container">
       <div class="section-header">
         <div class="section-eyebrow">Sobre nós</div>
-        <h2>Irmãos Robaski</h2>
-        <p>Distribuidora atacadista de mix amplo para padarias, lanchonetes, restaurantes, mercados de bairro, condomínios e eventos.</p>
-        <p style="margin-top: 8px; font-size: 13px; color: var(--text-soft);"><em>Texto institucional definitivo a ser preenchido após briefing.</em></p>
+        <h2>Distribuidora <span>Irmãos Robaski</span></h2>
+        <p>Empresa familiar gaúcha, especialista em atacado e distribuição de mercearia, bebidas, limpeza, embalagens, descartáveis e utilidades.</p>
+      </div>
+
+      <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(240px, 1fr)); gap: 18px; max-width: 980px; margin: 0 auto;">
+        <div style="background: var(--bg-soft); padding: 22px; border-radius: var(--radius); border-left: 3px solid var(--brand);">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--brand); margin-bottom: 6px;">Mix amplo</h3>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.55;">Mais de 1.900 SKUs em 19 categorias. Você compra tudo num lugar só — mercearia, limpeza, bebidas, embalagens, descartáveis e utilidades.</p>
+        </div>
+        <div style="background: var(--bg-soft); padding: 22px; border-radius: var(--radius); border-left: 3px solid var(--brand);">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--brand); margin-bottom: 6px;">Foco em revenda</h3>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.55;">Atendemos padarias, lanchonetes, restaurantes, mercados de bairro, condomínios, eventos e revendedores. Preço de atacado, entrega regional.</p>
+        </div>
+        <div style="background: var(--bg-soft); padding: 22px; border-radius: var(--radius); border-left: 3px solid var(--brand);">
+          <h3 style="font-size: 16px; font-weight: 700; color: var(--brand); margin-bottom: 6px;">Pedido sem fricção</h3>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.55;">Catálogo digital com busca, filtros e lista de pedidos. Você monta no site e envia a lista pelo WhatsApp em uma mensagem só.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ════════════════════════════════════════ FAQ ════════════════════════════════════════ -->
+  <section id="faq" style="background: var(--bg-soft);">
+    <div class="container">
+      <div class="section-header">
+        <div class="section-eyebrow">Perguntas frequentes</div>
+        <h2>Tire suas <span>dúvidas</span></h2>
+      </div>
+
+      <div style="max-width: 820px; margin: 0 auto;">
+        <details style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 10px;">
+          <summary style="font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; list-style: none;">Como faço meu pedido na Irmãos Robaski?</summary>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 10px;">Navegue pelo catálogo digital, adicione os produtos com a quantidade desejada na sua lista e clique em <strong>Enviar pelo WhatsApp</strong>. Sua lista chega formatada pelo nosso vendedor, que confirma estoque, preço e prazo de entrega.</p>
+        </details>
+
+        <details style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 10px;">
+          <summary style="font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; list-style: none;">Tem pedido mínimo?</summary>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 10px;">Sim, trabalhamos com pedido mínimo para atacado e revenda. O valor exato varia conforme a região de entrega — nosso vendedor confirma assim que recebe a sua lista pelo WhatsApp.</p>
+        </details>
+
+        <details style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 10px;">
+          <summary style="font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; list-style: none;">Quais formas de pagamento vocês aceitam?</summary>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 10px;">Aceitamos Pix, boleto, cartão de crédito/débito e dinheiro. Condições especiais para revenda são combinadas direto com o vendedor.</p>
+        </details>
+
+        <details style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px; margin-bottom: 10px;">
+          <summary style="font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; list-style: none;">Quanto tempo demora a entrega?</summary>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 10px;">O prazo depende da região e do volume do pedido. Na maior parte das cidades atendemos no mesmo dia ou dia seguinte. O vendedor confirma o prazo exato após receber sua lista.</p>
+        </details>
+
+        <details style="background: #fff; border: 1px solid var(--border); border-radius: var(--radius); padding: 18px 22px;">
+          <summary style="font-size: 15px; font-weight: 700; color: var(--text); cursor: pointer; list-style: none;">Posso comprar no varejo (uma unidade só)?</summary>
+          <p style="font-size: 14px; color: var(--text-muted); line-height: 1.6; margin-top: 10px;">Não — a Irmãos Robaski trabalha <strong>exclusivamente com atacado e revenda</strong>. Vendemos por fardo, caixa ou volume mínimo conforme cada categoria.</p>
+        </details>
       </div>
     </div>
   </section>
@@ -178,6 +330,8 @@
       </a>
     </div>
   </section>
+
+  </main>
 
   <!-- ════════════════════════════════════════ FOOTER ════════════════════════════════════════ -->
   <footer>

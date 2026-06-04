@@ -190,8 +190,8 @@
     const cat = state.categorias.find(c => c.slug === p.categoriaHumana);
     return `
       <article class="produto-card">
-        <a class="produto-img" href="p/${p.slug}.html">
-          <img src="${imgSrc}" alt="${escapeHTML(p.nome)}" loading="lazy">
+        <a class="produto-img" href="p/${p.slug}.html" aria-label="Ver detalhes de ${escapeHTML(p.nome)}">
+          <img src="${imgSrc}" alt="${escapeHTML(p.nome)}" loading="lazy" width="220" height="275">
           ${cat ? `<span class="produto-cat-badge">${cat.titulo}</span>` : ''}
         </a>
         <div class="produto-info">
@@ -292,12 +292,17 @@
       renderMarcas();
       bindInputs();
 
-      // Pré-seleção via URL ?cat=slug
+      // Pré-seleção via URL ?cat=slug e/ou ?q=busca
       const params = new URLSearchParams(location.search);
       const cat = params.get('cat');
       if (cat && state.categorias.find(c => c.slug === cat)) {
         state.filtros.categoria = cat;
         els.categorias.querySelectorAll('.cat-opcao').forEach(b => b.classList.toggle('ativo', b.getAttribute('data-cat') === cat));
+      }
+      const q = params.get('q');
+      if (q && els.busca) {
+        state.filtros.busca = q;
+        els.busca.value = q;
       }
 
       aplicarFiltros();

@@ -74,11 +74,12 @@ const NAVBAR = (level = 0) => {
           <span>Atacado · Distribuição</span>
         </div>
       </a>
-      <ul class="nav-menu">
+      <ul class="nav-menu" id="nav-menu">
         <li><a href="${prefix}index.html">Home</a></li>
         <li><a href="${prefix}produtos.html">Catálogo</a></li>
         <li><a href="${prefix}index.html#categorias">Categorias</a></li>
         <li><a href="${prefix}index.html#sobre">Sobre</a></li>
+        <li><a href="${prefix}index.html#faq">FAQ</a></li>
       </ul>
       <button class="nav-cart-btn" data-open-cart aria-label="Abrir carrinho">
         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 3h2l.4 2M7 13h10l4-8H5.4M7 13l-1.5-8M7 13l-2 9m12-9l2 9M9 21a2 2 0 100-4 2 2 0 000 4zm10 0a2 2 0 100-4 2 2 0 000 4z"/></svg>
@@ -135,6 +136,7 @@ const WPP_FLOAT = `
 const HEAD_FONTS = `
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">`;
 
 /* ════════════════════════════════════════════════════════════════
@@ -205,8 +207,8 @@ function paginaProduto(p, categoria, relacionados) {
               : '../assets/img/placeholder.svg';
             return `
               <article class="produto-card">
-                <a class="produto-img" href="${r.slug}.html">
-                  <img src="${escapeAttr(imgRel)}" alt="${escapeAttr(r.nome)}" loading="lazy">
+                <a class="produto-img" href="${r.slug}.html" aria-label="Ver detalhes de ${escapeAttr(r.nome)}">
+                  <img src="${escapeAttr(imgRel)}" alt="${escapeAttr(r.nome)}" loading="lazy" width="220" height="275">
                 </a>
                 <div class="produto-info">
                   ${r.marca ? `<span class="produto-marca">${escapeHTML(r.marca)}</span>` : ''}
@@ -238,10 +240,16 @@ function paginaProduto(p, categoria, relacionados) {
   <meta property="og:title" content="${escapeAttr(p.nome)}">
   <meta property="og:description" content="${escapeAttr(desc)}">
   <meta property="og:image" content="${imgAbsolute}">
+  <meta property="og:image:width" content="800">
+  <meta property="og:image:height" content="800">
   <meta property="og:site_name" content="Irmãos Robaski">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeAttr(p.nome)}">
+  <meta name="twitter:description" content="${escapeAttr(desc)}">
+  <meta name="twitter:image" content="${imgAbsolute}">
 
   ${HEAD_FONTS}
-  <link rel="stylesheet" href="../assets/css/style.css?v=2">
+  <link rel="stylesheet" href="../assets/css/style.css?v=3">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png">
 
@@ -250,7 +258,11 @@ function paginaProduto(p, categoria, relacionados) {
 </head>
 <body>
 
+  <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+
 ${NAVBAR(1)}
+
+  <main id="main-content">
 
   <div class="container">
     <div class="breadcrumb">
@@ -267,7 +279,7 @@ ${NAVBAR(1)}
   <main class="container">
     <div class="produto-detalhe">
       <div class="produto-detalhe-img">
-        <img src="${escapeAttr(imgSrc)}" alt="${escapeAttr(p.nome)}" loading="eager">
+        <img src="${escapeAttr(imgSrc)}" alt="${escapeAttr(p.nome)}" loading="eager" width="500" height="500">
       </div>
       <div class="produto-detalhe-info">
         ${p.marca ? `<span class="produto-marca" style="font-size: 12px;">${escapeHTML(p.marca)}</span>` : ''}
@@ -305,6 +317,8 @@ ${NAVBAR(1)}
   </main>
 
   ${relacionadosHTML}
+
+  </main>
 
   ${FOOTER(1)}
 
@@ -379,8 +393,8 @@ function paginaCategoria(cat, produtosCat) {
     const imgSrc = p.imagem ? `../${p.imagem}` : '../assets/img/placeholder.svg';
     return `
       <article class="produto-card">
-        <a class="produto-img" href="../p/${p.slug}.html">
-          <img src="${escapeAttr(imgSrc)}" alt="${escapeAttr(p.nome)}" loading="lazy">
+        <a class="produto-img" href="../p/${p.slug}.html" aria-label="Ver detalhes de ${escapeAttr(p.nome)}">
+          <img src="${escapeAttr(imgSrc)}" alt="${escapeAttr(p.nome)}" loading="lazy" width="220" height="275">
         </a>
         <div class="produto-info">
           ${p.marca ? `<span class="produto-marca">${escapeHTML(p.marca)}</span>` : ''}
@@ -404,9 +418,16 @@ function paginaCategoria(cat, produtosCat) {
   <meta property="og:url" content="${url}">
   <meta property="og:title" content="${escapeAttr(cat.titulo)} no Atacado | Irmãos Robaski">
   <meta property="og:description" content="${escapeAttr(desc)}">
+  <meta property="og:image" content="${ORIGIN}/assets/img/og-image.jpg">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="${escapeAttr(cat.titulo)} no Atacado">
+  <meta name="twitter:description" content="${escapeAttr(desc)}">
+  <meta name="twitter:image" content="${ORIGIN}/assets/img/og-image.jpg">
 
   ${HEAD_FONTS}
-  <link rel="stylesheet" href="../assets/css/style.css?v=2">
+  <link rel="stylesheet" href="../assets/css/style.css?v=3">
   <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
   <link rel="apple-touch-icon" sizes="180x180" href="../assets/img/apple-touch-icon.png">
 
@@ -415,7 +436,11 @@ function paginaCategoria(cat, produtosCat) {
 </head>
 <body>
 
+  <a href="#main-content" class="skip-link">Pular para o conteúdo</a>
+
 ${NAVBAR(1)}
+
+  <main id="main-content">
 
   <div class="container">
     <div class="breadcrumb">
@@ -430,13 +455,15 @@ ${NAVBAR(1)}
     <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;"><strong>${cat.count}</strong> produtos disponíveis nesta categoria.</p>
   </div>
 
-  <main class="container" style="padding-bottom: 60px;">
+  <div class="container" style="padding-bottom: 60px;">
     <div class="produtos-grid">
       ${cardsHTML}
     </div>
     <div style="text-align: center; margin-top: 36px;">
       <a href="../produtos.html?cat=${cat.slug}" class="btn btn-outline">Abrir cat. com filtros</a>
     </div>
+  </div>
+
   </main>
 
   ${FOOTER(1)}
