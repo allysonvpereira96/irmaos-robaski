@@ -31,7 +31,8 @@ async function main() {
   console.log('[extract-db] lendo produtos…');
   const produtosRows = await sql`
     SELECT id, slug, nome, categoria_slug, categoria_erp, marca,
-           preco, preco_fisica, unidade, ean, ncm, descricao_extra, imagem_url
+           preco, preco_fisica, unidade, ean, ncm, descricao_extra,
+           imagem_url, foto_status
     FROM produtos
     WHERE ativo = TRUE
     ORDER BY nome ASC
@@ -51,7 +52,10 @@ async function main() {
     ean: r.ean,
     ncm: r.ncm,
     descricaoExtra: r.descricao_extra,
-    imagem: r.imagem_url ? r.imagem_url.replace(/^\//, '') : null,
+    // imagens "erradas" são filtradas do site público (não rendem nas páginas)
+    imagem: r.imagem_url && r.foto_status !== 'errada'
+      ? r.imagem_url.replace(/^\//, '')
+      : null,
   }));
 
   const categorias = categoriasRows.map(r => ({

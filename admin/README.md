@@ -82,6 +82,29 @@ git add . && git commit -m "feat: admin painel" && git push
 | DELETE | `/api/admin/produto?id=X&hard=1` | remover de vez |
 | POST | `/api/admin/upload` | gera signed URL pro Vercel Blob |
 | POST | `/api/admin/rebuild` | dispara Deploy Hook (cooldown 30s) |
+| GET  | `/api/admin/fotos` | listagem otimizada pra galeria (com filtro por foto_status) |
+| PATCH | `/api/admin/foto?id=X` | atualiza apenas imagem_url / foto_status / foto_observacao |
+| DELETE | `/api/admin/foto?id=X` | remove a foto (mantém produto, status → pendente) |
+| GET  | `/api/admin/sem-foto-csv` | exporta CSV dos produtos sem foto (pro fotógrafo) |
+| POST | `/api/admin/match-fotos` | recebe filenames, retorna sugestão de match fuzzy com produtos |
+
+## Páginas do admin
+
+- `/admin/login.html` — login
+- `/admin/` (index.html) — dashboard com listagem de produtos
+- `/admin/produto.html?id=X` — form de criar/editar produto (com upload de foto)
+- `/admin/fotos.html` — **galeria de fotos** com filtros por status, ações inline (trocar/marcar errada/observação)
+- `/admin/upload-massa.html` — **upload em massa** com matching automático de filename → produto
+
+## Status de fotos (foto_status)
+
+Cada produto tem um campo `foto_status`:
+- `ok` — foto validada manualmente pela dona/admin
+- `auto` — veio do scraping automático, ainda precisa revisão
+- `errada` — marcada como errada (fica oculta no site público até substituir)
+- `pendente` — produto sem foto, aguardando produção fotográfica
+
+Imagens com status `errada` **não aparecem** no site público (`extract-to-json.mjs` filtra).
 
 ## Segurança
 

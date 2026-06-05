@@ -46,15 +46,18 @@ async function main() {
   console.log('[migrate] upsert produtos…');
   let ok = 0, fail = 0;
   for (const p of produtos) {
+    const fotoStatus = p.imagem ? 'auto' : 'pendente';
     try {
       await sql`
         INSERT INTO produtos (
           id, slug, nome, categoria_slug, categoria_erp, marca,
-          preco, preco_fisica, unidade, ean, ncm, descricao_extra, imagem_url, ativo
+          preco, preco_fisica, unidade, ean, ncm, descricao_extra, imagem_url,
+          foto_status, ativo
         ) VALUES (
           ${p.id}, ${p.slug}, ${p.nome}, ${p.categoriaHumana}, ${p.categoriaErp}, ${p.marca},
           ${p.preco}, ${p.precoFisica}, ${p.unidade}, ${p.ean}, ${p.ncm}, ${p.descricaoExtra},
-          ${p.imagem ? `/${p.imagem}` : null}, TRUE
+          ${p.imagem ? `/${p.imagem}` : null},
+          ${fotoStatus}, TRUE
         )
         ON CONFLICT (id) DO UPDATE SET
           slug = EXCLUDED.slug,

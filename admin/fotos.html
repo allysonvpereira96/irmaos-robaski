@@ -1,0 +1,403 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Fotos · Admin Irmãos Robaski</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="../assets/css/style.css?v=3">
+  <link rel="stylesheet" href="admin.css?v=2">
+  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <style>
+    .fotos-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      gap: 14px;
+    }
+    .foto-card {
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      overflow: hidden;
+      position: relative;
+      transition: all 0.15s;
+    }
+    .foto-card:hover { box-shadow: var(--shadow); border-color: var(--brand); }
+    .foto-card.status-errada { border-color: var(--danger); border-width: 2px; }
+    .foto-card.status-pendente { border: 2px dashed var(--accent-dark); background: #FEF9E7; }
+    .foto-card .img {
+      aspect-ratio: 1;
+      background: var(--bg-soft);
+      display: flex; align-items: center; justify-content: center;
+      overflow: hidden; position: relative;
+    }
+    .foto-card .img img { width: 100%; height: 100%; object-fit: contain; padding: 8px; }
+    .foto-card .img .placeholder {
+      color: var(--text-soft); font-size: 11px;
+      letter-spacing: 0.06em; text-transform: uppercase;
+    }
+    .foto-card .status-badge {
+      position: absolute; top: 8px; left: 8px;
+      font-size: 9px; font-weight: 800; letter-spacing: 0.06em;
+      padding: 3px 7px; border-radius: 4px;
+      text-transform: uppercase;
+    }
+    .badge-ok { background: #DCFCE7; color: #15803D; }
+    .badge-auto { background: #DBEAFE; color: #1E40AF; }
+    .badge-errada { background: #FEE2E2; color: var(--danger); }
+    .badge-pendente { background: var(--accent-soft); color: var(--accent-dark); }
+    .foto-card .info { padding: 10px 12px 12px; }
+    .foto-card .nome {
+      font-size: 12px; font-weight: 600; color: var(--text);
+      line-height: 1.3;
+      display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 46px;
+    }
+    .foto-card .meta { font-size: 10px; color: var(--text-soft); margin-top: 4px; }
+    .foto-card .actions {
+      display: flex; gap: 4px; padding: 8px 10px; border-top: 1px solid var(--border-soft);
+      background: var(--bg-soft);
+    }
+    .foto-card .actions button {
+      flex: 1; padding: 6px 4px; font-size: 11px; font-weight: 600;
+      background: #fff; border: 1px solid var(--border);
+      border-radius: 4px; color: var(--text);
+      transition: all 0.1s;
+    }
+    .foto-card .actions button:hover { background: var(--bg-soft); border-color: var(--brand); }
+    .foto-card .actions button.ativo { background: var(--brand); color: #fff; border-color: var(--brand); }
+    .foto-card .actions button.danger:hover { background: #FEE2E2; color: var(--danger); border-color: var(--danger); }
+
+    /* Modal */
+    .modal-bg {
+      position: fixed; inset: 0;
+      background: rgba(15, 26, 20, 0.7);
+      display: none; align-items: center; justify-content: center;
+      z-index: 200; padding: 16px;
+    }
+    .modal-bg.open { display: flex; }
+    .modal {
+      background: #fff; border-radius: 12px; padding: 28px;
+      max-width: 480px; width: 100%;
+      box-shadow: var(--shadow-lg);
+    }
+    .modal h3 { font-size: 18px; font-weight: 700; margin-bottom: 6px; }
+    .modal .sub { font-size: 13px; color: var(--text-muted); margin-bottom: 18px; }
+    .modal textarea {
+      width: 100%; padding: 10px; border: 1px solid var(--border);
+      border-radius: 6px; font-family: inherit; font-size: 14px;
+      min-height: 80px; resize: vertical;
+    }
+    .modal .acts { display: flex; justify-content: flex-end; gap: 8px; margin-top: 18px; }
+  </style>
+</head>
+<body>
+
+  <div class="admin-shell">
+
+    <header class="admin-header">
+      <div class="left">
+        <img src="../assets/img/logo-white.png" class="logo" alt="Logo">
+        <h1>Gestão de Fotos<small>Galeria · Marcação · Substituição</small></h1>
+      </div>
+      <div class="right">
+        <a href="upload-massa.html" class="btn-logout" style="background: var(--accent); color: var(--text);">⬆ Upload em massa</a>
+        <a href="./" class="btn-logout">‹ Voltar</a>
+      </div>
+    </header>
+
+    <main class="admin-main">
+
+      <!-- Stats -->
+      <div class="stats-row">
+        <div class="stat-card"><div class="label">Total ativos</div><div class="value" id="s-total">—</div></div>
+        <div class="stat-card" style="border-left: 3px solid #15803D;"><div class="label">Validadas</div><div class="value" id="s-ok" style="color: #15803D;">—</div></div>
+        <div class="stat-card" style="border-left: 3px solid #1E40AF;"><div class="label">Automáticas</div><div class="value" id="s-auto" style="color: #1E40AF;">—</div><div class="sub">Scraping — revisar</div></div>
+        <div class="stat-card" style="border-left: 3px solid var(--danger);"><div class="label">Marcadas erradas</div><div class="value" id="s-errada" style="color: var(--danger);">—</div></div>
+        <div class="stat-card" style="border-left: 3px solid var(--accent);"><div class="label">Pendentes / sem foto</div><div class="value" id="s-pendente" style="color: var(--accent-dark);">—</div></div>
+      </div>
+
+      <div class="tools-row">
+        <input type="search" id="busca" placeholder="Buscar por nome, código ou EAN...">
+        <select id="filtro-cat">
+          <option value="">Todas as categorias</option>
+        </select>
+        <select id="filtro-status">
+          <option value="">Todos os status</option>
+          <option value="ok">Validadas (OK)</option>
+          <option value="auto">Automáticas (do scraping)</option>
+          <option value="errada">Marcadas como erradas</option>
+          <option value="pendente">Pendentes</option>
+          <option value="sem-foto">Sem foto nenhuma</option>
+        </select>
+        <div class="grow"></div>
+        <button class="btn-add" id="btn-export-csv" style="background: var(--text); color: #fff;">⬇ Exportar sem foto (CSV)</button>
+      </div>
+
+      <div id="grid-wrap"></div>
+
+      <div class="paginacao" id="paginacao"></div>
+
+      <p style="font-size: 11px; color: var(--text-soft); text-align: center; margin-top: 12px;">
+        Exibindo <span id="info-total">—</span> ·
+        Fotos marcadas como <strong>erradas</strong> ficam ocultas no site público após o próximo "Aplicar no site".
+      </p>
+
+    </main>
+  </div>
+
+  <!-- Modal de observação -->
+  <div class="modal-bg" id="modal-obs">
+    <div class="modal">
+      <h3>Observação sobre a foto</h3>
+      <div class="sub" id="modal-prod-nome"></div>
+      <textarea id="modal-obs-text" placeholder="Ex: 'tirar foto melhor', 'embalagem antiga, atualizar'..."></textarea>
+      <div class="acts">
+        <button class="btn-logout" id="modal-cancel">Cancelar</button>
+        <button class="btn-add" id="modal-save" style="background: var(--brand); color: #fff;">Salvar</button>
+      </div>
+    </div>
+  </div>
+
+  <script type="module">
+    import { api, toast, escapeHTML, debounce } from './admin.js';
+    import { upload } from 'https://esm.sh/@vercel/blob@0.27.3/client?bundle';
+
+    const state = {
+      page: 1, size: 60, q: '', cat: '', status: '',
+      categorias: [],
+    };
+
+    async function loadCategorias() {
+      const { rows } = await api('/api/admin/categorias');
+      state.categorias = rows;
+      const sel = document.getElementById('filtro-cat');
+      rows.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.slug; opt.textContent = `${c.titulo} (${c.count})`;
+        sel.appendChild(opt);
+      });
+    }
+
+    function catTitulo(slug) {
+      return state.categorias.find(c => c.slug === slug)?.titulo || slug;
+    }
+
+    function statusBadge(status, semFoto) {
+      if (semFoto && status !== 'errada') return '<span class="status-badge badge-pendente">PENDENTE</span>';
+      if (status === 'ok') return '<span class="status-badge badge-ok">OK</span>';
+      if (status === 'auto') return '<span class="status-badge badge-auto">AUTO</span>';
+      if (status === 'errada') return '<span class="status-badge badge-errada">ERRADA</span>';
+      return '<span class="status-badge badge-pendente">PENDENTE</span>';
+    }
+
+    function renderStats(s) {
+      document.getElementById('s-total').textContent = (s.total || 0).toLocaleString('pt-BR');
+      document.getElementById('s-ok').textContent = s.ok || 0;
+      document.getElementById('s-auto').textContent = (s.auto || 0).toLocaleString('pt-BR');
+      document.getElementById('s-errada').textContent = s.errada || 0;
+      document.getElementById('s-pendente').textContent = ((s.pendente || 0) + (s.sem_foto || 0)).toLocaleString('pt-BR');
+    }
+
+    async function loadFotos() {
+      const grid = document.getElementById('grid-wrap');
+      grid.innerHTML = `<div class="empty"><span class="spinner"></span> Carregando fotos...</div>`;
+      try {
+        const params = new URLSearchParams({
+          page: state.page, size: state.size,
+          ...(state.q ? { q: state.q } : {}),
+          ...(state.cat ? { cat: state.cat } : {}),
+          ...(state.status ? { status: state.status } : {}),
+        });
+        const data = await api('/api/admin/fotos?' + params);
+        renderStats(data.stats);
+        document.getElementById('info-total').textContent =
+          `${data.total.toLocaleString('pt-BR')} produtos`;
+        renderGrid(data.rows);
+        renderPag(data.pages);
+      } catch (e) {
+        grid.innerHTML = `<div class="empty"><strong>Erro</strong>${escapeHTML(e.message)}</div>`;
+      }
+    }
+
+    function renderGrid(rows) {
+      const wrap = document.getElementById('grid-wrap');
+      if (!rows.length) {
+        wrap.innerHTML = `<div class="empty"><strong>Nenhum produto encontrado</strong>Tente outros filtros.</div>`;
+        return;
+      }
+      wrap.innerHTML = '<div class="fotos-grid">' + rows.map(r => {
+        const cardClass = r.foto_status === 'errada' ? 'status-errada'
+                        : (!r.imagem_url || r.foto_status === 'pendente') ? 'status-pendente' : '';
+        return `
+          <div class="foto-card ${cardClass}" data-id="${escapeHTML(r.id)}">
+            ${statusBadge(r.foto_status, !r.imagem_url)}
+            <div class="img">
+              ${r.imagem_url
+                ? `<img src="${escapeHTML(r.imagem_url)}" alt="" loading="lazy">`
+                : `<div class="placeholder">SEM FOTO</div>`}
+            </div>
+            <div class="info">
+              <div class="nome">${escapeHTML(r.nome)}</div>
+              <div class="meta">${escapeHTML(catTitulo(r.categoria_slug))} · ${escapeHTML(r.marca || '—')}</div>
+              ${r.foto_observacao ? `<div class="meta" style="font-style: italic; color: var(--accent-dark); margin-top: 4px;">💬 ${escapeHTML(r.foto_observacao)}</div>` : ''}
+            </div>
+            <div class="actions">
+              <button data-act="upload" title="Substituir foto">📷 Trocar</button>
+              <button data-act="toggle-errada" class="${r.foto_status === 'errada' ? 'ativo' : 'danger'}" title="Marcar/desmarcar como errada">✗ Errada</button>
+              <button data-act="ok" class="${r.foto_status === 'ok' ? 'ativo' : ''}" title="Marcar como validada">✓ OK</button>
+              <button data-act="obs" title="Adicionar observação">💬</button>
+            </div>
+          </div>
+        `;
+      }).join('') + '</div>';
+
+      wrap.querySelectorAll('.foto-card').forEach(card => bindCard(card));
+    }
+
+    function bindCard(card) {
+      const id = card.getAttribute('data-id');
+
+      card.querySelector('[data-act="upload"]').addEventListener('click', () => triggerUpload(id));
+
+      card.querySelector('[data-act="toggle-errada"]').addEventListener('click', async () => {
+        const isErrada = card.classList.contains('status-errada');
+        const novo = isErrada ? 'ok' : 'errada';
+        await updateStatus(id, novo);
+      });
+
+      card.querySelector('[data-act="ok"]').addEventListener('click', async () => {
+        await updateStatus(id, 'ok');
+      });
+
+      card.querySelector('[data-act="obs"]').addEventListener('click', () => abrirModal(id));
+    }
+
+    async function updateStatus(id, foto_status) {
+      try {
+        await api('/api/admin/foto?id=' + encodeURIComponent(id), {
+          method: 'PATCH', body: { foto_status },
+        });
+        toast(`Marcada como ${foto_status === 'errada' ? 'ERRADA' : 'OK'}`, 'success');
+        loadFotos();
+      } catch (e) { toast(e.message, 'error'); }
+    }
+
+    /* ─── Upload inline ─── */
+    let uploadingFor = null;
+    const hiddenInput = document.createElement('input');
+    hiddenInput.type = 'file';
+    hiddenInput.accept = 'image/png,image/jpeg,image/webp';
+    hiddenInput.style.display = 'none';
+    document.body.appendChild(hiddenInput);
+
+    function triggerUpload(id) {
+      uploadingFor = id;
+      hiddenInput.value = '';
+      hiddenInput.click();
+    }
+
+    hiddenInput.addEventListener('change', async () => {
+      const file = hiddenInput.files?.[0];
+      if (!file || !uploadingFor) return;
+      const id = uploadingFor;
+      const card = document.querySelector(`.foto-card[data-id="${id}"]`);
+      if (card) card.querySelector('.img').innerHTML = '<span class="spinner"></span>';
+
+      try {
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const filename = `produtos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const blob = await upload(filename, file, {
+          access: 'public',
+          handleUploadUrl: '/api/admin/upload',
+        });
+        await api('/api/admin/foto?id=' + encodeURIComponent(id), {
+          method: 'PATCH',
+          body: { imagem_url: blob.url, foto_status: 'ok' },
+        });
+        toast('Foto trocada', 'success');
+        loadFotos();
+      } catch (e) {
+        toast('Erro: ' + e.message, 'error');
+        loadFotos();
+      } finally { uploadingFor = null; }
+    });
+
+    /* ─── Modal de observação ─── */
+    const modal = document.getElementById('modal-obs');
+    let modalProdId = null;
+    function abrirModal(id) {
+      modalProdId = id;
+      const card = document.querySelector(`.foto-card[data-id="${id}"]`);
+      const nome = card?.querySelector('.nome')?.textContent || id;
+      document.getElementById('modal-prod-nome').textContent = nome;
+      document.getElementById('modal-obs-text').value =
+        card?.querySelector('[style*="italic"]')?.textContent?.replace(/^💬\s*/, '') || '';
+      modal.classList.add('open');
+    }
+    document.getElementById('modal-cancel').addEventListener('click', () => modal.classList.remove('open'));
+    modal.addEventListener('click', e => { if (e.target === modal) modal.classList.remove('open'); });
+    document.getElementById('modal-save').addEventListener('click', async () => {
+      const obs = document.getElementById('modal-obs-text').value.trim();
+      try {
+        await api('/api/admin/foto?id=' + encodeURIComponent(modalProdId), {
+          method: 'PATCH', body: { foto_observacao: obs || null },
+        });
+        toast('Observação salva', 'success');
+        modal.classList.remove('open');
+        loadFotos();
+      } catch (e) { toast(e.message, 'error'); }
+    });
+
+    /* ─── Paginação ─── */
+    function renderPag(totalPages) {
+      const cont = document.getElementById('paginacao');
+      if (totalPages <= 1) { cont.innerHTML = ''; return; }
+      const cur = state.page;
+      const btns = [`<button data-p="prev" ${cur === 1 ? 'disabled' : ''}>‹</button>`];
+      const set = new Set([1, totalPages, cur, cur - 1, cur + 1]);
+      const sorted = [...set].filter(n => n >= 1 && n <= totalPages).sort((a, b) => a - b);
+      let last = 0;
+      for (const n of sorted) {
+        if (last && n - last > 1) btns.push('<button disabled>…</button>');
+        btns.push(`<button data-p="${n}" class="${n === cur ? 'ativo' : ''}">${n}</button>`);
+        last = n;
+      }
+      btns.push(`<button data-p="next" ${cur === totalPages ? 'disabled' : ''}>›</button>`);
+      cont.innerHTML = btns.join('');
+      cont.querySelectorAll('button[data-p]:not(:disabled)').forEach(b => {
+        b.addEventListener('click', () => {
+          const v = b.getAttribute('data-p');
+          if (v === 'prev') state.page = Math.max(1, state.page - 1);
+          else if (v === 'next') state.page = Math.min(totalPages, state.page + 1);
+          else state.page = parseInt(v, 10);
+          loadFotos();
+          window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+      });
+    }
+
+    /* ─── Filtros ─── */
+    document.getElementById('busca').addEventListener('input', debounce(e => {
+      state.q = e.target.value.trim();
+      state.page = 1; loadFotos();
+    }, 280));
+    document.getElementById('filtro-cat').addEventListener('change', e => {
+      state.cat = e.target.value; state.page = 1; loadFotos();
+    });
+    document.getElementById('filtro-status').addEventListener('change', e => {
+      state.status = e.target.value; state.page = 1; loadFotos();
+    });
+    document.getElementById('btn-export-csv').addEventListener('click', () => {
+      window.location.href = '/api/admin/sem-foto-csv';
+    });
+
+    /* ─── Boot ─── */
+    loadCategorias().then(loadFotos);
+  </script>
+</body>
+</html>

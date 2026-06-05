@@ -31,15 +31,35 @@ CREATE TABLE IF NOT EXISTS produtos (
   ncm              TEXT,
   descricao_extra  TEXT,
   imagem_url       TEXT,                          -- URL absoluta (Vercel Blob ou assets/)
+  -- Status da foto (pra gestão pelo admin):
+  --   'ok'        → foto validada
+  --   'auto'      → veio do scraping automático, ainda não revisada
+  --   'errada'    → marcada como errada (não usar; aguardando substituição)
+  --   'pendente'  → produto ainda sem foto, precisa fotografia
+  foto_status      TEXT NOT NULL DEFAULT 'auto' CHECK (foto_status IN ('ok','auto','errada','pendente')),
+  foto_observacao  TEXT,                          -- nota livre da dona (ex: "tirar nova foto melhor")
   ativo            BOOLEAN NOT NULL DEFAULT TRUE,
   created_at       TIMESTAMPTZ NOT NULL DEFAULT NOW(),
   updated_at       TIMESTAMPTZ NOT NULL DEFAULT NOW()
 );
 
-CREATE INDEX IF NOT EXISTS idx_produtos_categoria ON produtos(categoria_slug);
-CREATE INDEX IF NOT EXISTS idx_produtos_ativo     ON produtos(ativo);
-CREATE INDEX IF NOT EXISTS idx_produtos_nome      ON produtos USING gin (to_tsvector('portuguese', nome));
-CREATE INDEX IF NOT EXISTS idx_produtos_marca     ON produtos(marca) WHERE marca IS NOT NULL;
+-- Migration p/ instalações antigas: adiciona as colunas se não existirem
+DO $$ BEGIN
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='produtos' AND column_name='foto_status') THEN
+    ALTER TABLE produtos ADD COLUMN foto_status TEXT NOT NULL DEFAULT 'auto'
+      CHECK (foto_status IN ('ok','auto','errada','pendente'));
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='produtos' AND column_name='foto_observacao') THEN
+    ALTER TABLE produtos ADD COLUMN foto_observacao TEXT;
+  END IF;
+END $$;
+
+CREATE INDEX IF NOT EXISTS idx_produtos_categoria  ON produtos(categoria_slug);
+CREATE INDEX IF NOT EXISTS idx_produtos_ativo      ON produtos(ativo);
+CREATE INDEX IF NOT EXISTS idx_produtos_nome       ON produtos USING gin (to_tsvector('portuguese', nome));
+CREATE INDEX IF NOT EXISTS idx_produtos_marca      ON produtos(marca) WHERE marca IS NOT NULL;
+CREATE INDEX IF NOT EXISTS idx_produtos_fotostatus ON produtos(foto_status);
+CREATE INDEX IF NOT EXISTS idx_produtos_semfoto    ON produtos(ativo) WHERE imagem_url IS NULL;
 
 -- ─── Admin users ────────────────────────────────────────────────
 CREATE TABLE IF NOT EXISTS admin_users (

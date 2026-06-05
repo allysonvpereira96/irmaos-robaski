@@ -22,6 +22,8 @@
         <h1>Painel Administrativo<small>Gestão de produtos · Irmãos Robaski</small></h1>
       </div>
       <div class="right">
+        <a href="fotos.html" class="btn-logout" title="Gestão das fotos do catálogo">📷 Fotos</a>
+        <a href="upload-massa.html" class="btn-logout" title="Upload de várias fotos com matching automático">⬆ Massa</a>
         <span class="user-chip" id="user-chip"></span>
         <button class="btn-rebuild" id="btn-rebuild" title="Aplicar mudanças no site público">
           ↻ Aplicar no site
@@ -86,6 +88,7 @@
 
   <script type="module">
     import { api, toast, escapeHTML, debounce } from './admin.js';
+    import { upload } from 'https://esm.sh/@vercel/blob@0.27.3/client?bundle';
 
     const state = {
       page: 1, size: 50, q: '', cat: '', ativo: '1',
@@ -191,11 +194,17 @@
           <td class="col-meta-hide">${escapeHTML(r.marca || '—')}</td>
           <td><span class="badge ${r.ativo ? 'ativo' : 'inativo'}">${r.ativo ? 'ATIVO' : 'INATIVO'}</span></td>
           <td class="actions">
+            <button data-foto="${encodeURIComponent(r.id)}" title="Trocar foto rápido">📷</button>
             <a href="produto.html?id=${encodeURIComponent(r.id)}"><button>Editar</button></a>
             <button class="danger" data-del="${encodeURIComponent(r.id)}" data-nome="${escapeHTML(r.nome)}">Excluir</button>
           </td>
         </tr>
       `).join('');
+
+      // Trocar foto inline (modal de upload)
+      tbody.querySelectorAll('button[data-foto]').forEach(btn => {
+        btn.addEventListener('click', () => triggerUploadFoto(decodeURIComponent(btn.getAttribute('data-foto'))));
+      });
 
       tbody.querySelectorAll('button[data-del]').forEach(btn => {
         btn.addEventListener('click', async () => {
@@ -240,6 +249,43 @@
         });
       });
     }
+
+    /* ─── Upload de foto inline ─── */
+    let fotoUploadFor = null;
+    const fotoInput = document.createElement('input');
+    fotoInput.type = 'file';
+    fotoInput.accept = 'image/png,image/jpeg,image/webp';
+    fotoInput.style.display = 'none';
+    document.body.appendChild(fotoInput);
+
+    function triggerUploadFoto(id) {
+      fotoUploadFor = id;
+      fotoInput.value = '';
+      fotoInput.click();
+    }
+
+    fotoInput.addEventListener('change', async () => {
+      const file = fotoInput.files?.[0];
+      if (!file || !fotoUploadFor) return;
+      const id = fotoUploadFor;
+      toast('Enviando foto...', 'success');
+      try {
+        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
+        const filename = `produtos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
+        const blob = await upload(filename, file, {
+          access: 'public',
+          handleUploadUrl: '/api/admin/upload',
+        });
+        await api('/api/admin/foto?id=' + encodeURIComponent(id), {
+          method: 'PATCH',
+          body: { imagem_url: blob.url, foto_status: 'ok' },
+        });
+        toast('Foto atualizada', 'success');
+        loadProdutos();
+      } catch (e) {
+        toast('Erro: ' + e.message, 'error');
+      } finally { fotoUploadFor = null; }
+    });
 
     /* ─── Binds dos filtros ─── */
     document.getElementById('busca').addEventListener('input', debounce(e => {
