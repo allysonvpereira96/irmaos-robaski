@@ -52,6 +52,17 @@ DO $$ BEGIN
   IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='produtos' AND column_name='foto_observacao') THEN
     ALTER TABLE produtos ADD COLUMN foto_observacao TEXT;
   END IF;
+  -- Imagens armazenadas como BYTEA no Postgres (em vez de object storage).
+  -- Servidas via /api/imagem?slug=X com cache CDN agressivo.
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='produtos' AND column_name='imagem_bytes') THEN
+    ALTER TABLE produtos ADD COLUMN imagem_bytes BYTEA;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='produtos' AND column_name='imagem_mime') THEN
+    ALTER TABLE produtos ADD COLUMN imagem_mime TEXT;
+  END IF;
+  IF NOT EXISTS (SELECT 1 FROM information_schema.columns WHERE table_name='produtos' AND column_name='imagem_hash') THEN
+    ALTER TABLE produtos ADD COLUMN imagem_hash TEXT;  -- SHA-1 do conteúdo (cache-buster)
+  END IF;
 END $$;
 
 CREATE INDEX IF NOT EXISTS idx_produtos_categoria  ON produtos(categoria_slug);
