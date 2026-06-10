@@ -29,28 +29,38 @@ export default async function handler(req, res) {
   const size = Math.min(200, Math.max(1, parseInt(url.searchParams.get('size') || '60', 10)));
   const offset = (page - 1) * size;
 
-  // Filtros dinâmicos
-  const filters = [sql`ativo = TRUE`];
-  if (status === 'sem-foto') filters.push(sql`imagem_url IS NULL`);
-  else if (status) filters.push(sql`foto_status = ${status}`);
-  if (cat) filters.push(sql`categoria_slug = ${cat}`);
-  if (q) filters.push(sql`(nome ILIKE ${'%' + q + '%'} OR id = ${q} OR ean = ${q})`);
+  // Filtros dinâmicos (sem tagged-template composto — driver Neon não aceita)
+  const conditions = ['ativo = TRUE'];
+  const params = [];
+  if (status === 'sem-foto') conditions.push('imagem_url IS NULL');
+  else if (status) { params.push(status); conditions.push(`foto_status = $${params.length}`); }
+  if (cat) { params.push(cat); conditions.push(`categoria_slug = $${params.length}`); }
+  if (q) {
+    params.push('%' + q + '%'); const pLike = params.length;
+    params.push(q); const pEq = params.length;
+    conditions.push(`(nome ILIKE $${pLike} OR id = $${pEq} OR ean = $${pEq})`);
+  }
+  const whereSQL = 'WHERE ' + conditions.join(' AND ');
 
-  const whereClause = filters.reduce(
-    (acc, f, i) => i === 0 ? sql`WHERE ${f}` : sql`${acc} AND ${f}`,
-    sql``
-  );
+  params.push(size);   const pSize = params.length;
+  params.push(offset); const pOffset = params.length;
 
-  const rows = await sql`
+  const querySQL = `
     SELECT id, slug, nome, categoria_slug, marca, imagem_url, foto_status, foto_observacao, updated_at
     FROM produtos
-    ${whereClause}
+    ${whereSQL}
     ORDER BY
       CASE foto_status WHEN 'errada' THEN 0 WHEN 'pendente' THEN 1 WHEN 'auto' THEN 2 ELSE 3 END,
       nome ASC
-    LIMIT ${size} OFFSET ${offset}
+    LIMIT $${pSize} OFFSET $${pOffset}
   `;
-  const [{ count }] = await sql`SELECT COUNT(*)::int AS count FROM produtos ${whereClause}`;
+  const rows = await sql(querySQL, params);
+  const countParams = params.slice(0, params.length - 2); // sem size/offset
+  const countResult = await sql(
+    `SELECT COUNT(*)::int AS count FROM produtos ${whereSQL}`,
+    countParams
+  );
+  const count = countResult[0].count;
 
   // Stats globais (sempre fixas, sem aplicar filtro)
   const stats = await sql`

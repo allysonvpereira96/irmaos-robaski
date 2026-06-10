@@ -30,25 +30,34 @@ async function list(req, res) {
   const ativoParam = url.searchParams.get('ativo');
   const ativoFilter = ativoParam === '0' ? false : ativoParam === '1' ? true : null;
 
-  // monta WHERE dinâmico via template-tag
-  const filters = [];
-  if (q) filters.push(sql`(nome ILIKE ${'%' + q + '%'} OR id = ${q} OR ean = ${q})`);
-  if (cat) filters.push(sql`categoria_slug = ${cat}`);
-  if (marca) filters.push(sql`marca = ${marca}`);
-  if (ativoFilter !== null) filters.push(sql`ativo = ${ativoFilter}`);
+  // WHERE dinâmico com query string + parâmetros (driver Neon não compõe tagged tags)
+  const conditions = [];
+  const params = [];
+  if (q) {
+    params.push('%' + q + '%'); const pLike = params.length;
+    params.push(q); const pEq = params.length;
+    conditions.push(`(nome ILIKE $${pLike} OR id = $${pEq} OR ean = $${pEq})`);
+  }
+  if (cat) { params.push(cat); conditions.push(`categoria_slug = $${params.length}`); }
+  if (marca) { params.push(marca); conditions.push(`marca = $${params.length}`); }
+  if (ativoFilter !== null) { params.push(ativoFilter); conditions.push(`ativo = $${params.length}`); }
+  const whereSQL = conditions.length ? 'WHERE ' + conditions.join(' AND ') : '';
 
-  const whereClause = filters.length
-    ? filters.reduce((acc, f, i) => i === 0 ? sql`WHERE ${f}` : sql`${acc} AND ${f}`, sql``)
-    : sql``;
-
-  const rows = await sql`
+  params.push(size);   const pSize = params.length;
+  params.push(offset); const pOffset = params.length;
+  const rows = await sql(`
     SELECT id, slug, nome, categoria_slug, marca, unidade, ean, imagem_url, ativo, updated_at
     FROM produtos
-    ${whereClause}
+    ${whereSQL}
     ORDER BY updated_at DESC, nome ASC
-    LIMIT ${size} OFFSET ${offset}
-  `;
-  const [{ count }] = await sql`SELECT COUNT(*)::int AS count FROM produtos ${whereClause}`;
+    LIMIT $${pSize} OFFSET $${pOffset}
+  `, params);
+  const countParams = params.slice(0, -2);
+  const countResult = await sql(
+    `SELECT COUNT(*)::int AS count FROM produtos ${whereSQL}`,
+    countParams
+  );
+  const count = countResult[0].count;
 
   return json(res, 200, { rows, total: count, page, size, pages: Math.ceil(count / size) });
 }

@@ -62,7 +62,7 @@ async function patch(id, req, res, user) {
   const params = [...vals, id];
 
   try {
-    const result = await sql.query(queryStr, params);
+    const result = await sql(queryStr, params);
     if (!result.length) return error(res, 404, 'Produto não encontrado');
     await sql`
       INSERT INTO audit_log (user_id, acao, entidade, entidade_id, detalhes)

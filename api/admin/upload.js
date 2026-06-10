@@ -7,41 +7,31 @@
  * Frontend: usa `upload()` de `@vercel/blob/client` que negocia com este endpoint.
  */
 
-import { handleUpload } from '@vercel/blob/client';
+/**
+ * /api/admin/upload — TEMPORARIAMENTE DESABILITADO
+ *
+ * O Vercel Blob foi criado como Private store (que não pode ser alterado pra
+ * Public depois da criação). O SDK v2 do @vercel/blob não tem fluxo simples
+ * pra signed URLs públicas reutilizáveis nesse modo.
+ *
+ * Solução pendente: deletar o store atual via dashboard/CLI e recriar como
+ * Public. Quando isso for resolvido, basta restaurar este arquivo pra versão
+ * anterior (em `git log api/admin/upload.js`).
+ *
+ * O admin segue funcionando pra:
+ *  - editar nome, marca, categoria, descrição, etc
+ *  - marcar fotos como erradas / ok / com observação
+ *  - excluir produtos
+ *  - exportar CSV de sem-foto
+ *  - aplicar mudanças no site público
+ */
 import { requireAuth } from '../../lib/auth.mjs';
-import { readJsonBody, error } from '../../lib/http.mjs';
+import { error } from '../../lib/http.mjs';
 
 export default async function handler(req, res) {
   const user = requireAuth(req, res);
   if (!user) return;
-
-  if (req.method !== 'POST') return error(res, 405, 'Use POST');
-
-  let body;
-  try { body = await readJsonBody(req); }
-  catch { return error(res, 400, 'JSON inválido'); }
-
-  try {
-    const jsonResponse = await handleUpload({
-      body,
-      request: req,
-      onBeforeGenerateToken: async (pathname) => ({
-        allowedContentTypes: ['image/jpeg', 'image/png', 'image/webp', 'image/avif'],
-        addRandomSuffix: true,
-        maximumSizeInBytes: 8 * 1024 * 1024, // 8MB
-        tokenPayload: JSON.stringify({ userId: user.userId, pathname }),
-      }),
-      onUploadCompleted: async ({ blob, tokenPayload }) => {
-        // não precisamos persistir nada aqui — o frontend recebe blob.url
-        // e envia no PATCH/POST do produto
-        console.log('[upload] blob ok:', blob.url);
-      },
-    });
-    res.statusCode = 200;
-    res.setHeader('content-type', 'application/json');
-    res.end(JSON.stringify(jsonResponse));
-  } catch (e) {
-    console.error(e);
-    return error(res, 500, e.message || 'Erro no upload');
-  }
+  return error(res, 503,
+    'Upload de foto está temporariamente desabilitado. O Vercel Blob foi criado como Private store e precisa ser recriado como Public. Enquanto isso, edite os outros campos do produto ou marque a foto como errada.'
+  );
 }

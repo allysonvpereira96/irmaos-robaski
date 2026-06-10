@@ -9,39 +9,53 @@
 import { readFile } from 'node:fs/promises';
 import { dirname, resolve, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import 'dotenv/config';
-import { sql } from '../lib/db.mjs';
+import { existsSync } from 'node:fs';
+import { config as dotenvConfig } from 'dotenv';
+import { Pool } from '@neondatabase/serverless';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
+// Carrega .env.local manualmente (dotenv default lê .env)
+if (!process.env.DATABASE_URL && !process.env.VERCEL) {
+  for (const p of [resolve(__dirname, '..', '.env.local'), resolve(__dirname, '..', '.env')]) {
+    if (existsSync(p)) { dotenvConfig({ path: p }); break; }
+  }
+}
+if (!process.env.DATABASE_URL) throw new Error('DATABASE_URL não configurada');
+
 async function main() {
   const schema = await readFile(join(__dirname, 'schema.sql'), 'utf8');
-
-  // Divide em statements respeitando blocos $$...$$ (funções) e comentários
   const statements = splitSQL(schema);
   console.log(`[init] ${statements.length} statements a executar`);
 
-  for (let i = 0; i < statements.length; i++) {
-    const stmt = statements[i].trim();
-    if (!stmt) continue;
-    const preview = stmt.split('\n')[0].slice(0, 70);
-    try {
-      await sql.query(stmt);
-      console.log(`  ✓ [${i + 1}/${statements.length}] ${preview}`);
-    } catch (e) {
-      console.error(`  ✗ [${i + 1}/${statements.length}] ${preview}`);
-      console.error(`     ${e.message}`);
-      throw e;
+  const pool = new Pool({ connectionString: process.env.DATABASE_URL });
+  const client = await pool.connect();
+  try {
+    for (let i = 0; i < statements.length; i++) {
+      const stmt = statements[i].trim();
+      if (!stmt) continue;
+      const preview = stmt.split('\n')[0].slice(0, 70);
+      try {
+        await client.query(stmt);
+        console.log(`  ✓ [${i + 1}/${statements.length}] ${preview}`);
+      } catch (e) {
+        console.error(`  ✗ [${i + 1}/${statements.length}] ${preview}`);
+        console.error(`     ${e.message}`);
+        throw e;
+      }
     }
-  }
 
-  console.log('\n[init] ✓ schema aplicado no Neon');
-  const [{ table_count }] = await sql`
-    SELECT COUNT(*)::int AS table_count
-    FROM information_schema.tables
-    WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
-  `;
-  console.log(`[init] ${table_count} tabelas em public`);
+    const r = await client.query(`
+      SELECT COUNT(*)::int AS table_count
+      FROM information_schema.tables
+      WHERE table_schema = 'public' AND table_type = 'BASE TABLE'
+    `);
+    console.log(`\n[init] ✓ schema aplicado no Neon`);
+    console.log(`[init] ${r.rows[0].table_count} tabelas em public`);
+  } finally {
+    client.release();
+    await pool.end();
+  }
 }
 
 /** Split SQL respeitando blocos $$ ... $$ (funções) */
