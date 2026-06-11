@@ -1,0 +1,11 @@
+# Imagens dos produtos não vão mais pro Vercel — ficam no Postgres (BYTEA).
+# Site público acessa via /api/imagem?slug=X.
+assets/img/produtos/
+
+# PDF do catálogo é entregável avulso (5 MB), não vai pra produção
+*.pdf
+build/.pdf-cache/
+
+# Build cache
+data/produtos-raw.json
+data/relatorio-*.csv

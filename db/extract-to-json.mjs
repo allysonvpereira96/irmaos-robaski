@@ -32,14 +32,23 @@ async function main() {
   const produtosRows = await sql`
     SELECT id, slug, nome, categoria_slug, categoria_erp, marca,
            preco, preco_fisica, unidade, ean, ncm, descricao_extra,
-           imagem_url, foto_status
+           imagem_url, foto_status,
+           (imagem_bytes IS NOT NULL) AS tem_bytes
     FROM produtos
     WHERE ativo = TRUE
     ORDER BY nome ASC
   `;
 
-  // Adapta o shape pra ser idêntico ao que o build-site.mjs espera
-  const produtos = produtosRows.map(r => ({
+  // Adapta o shape pra ser idêntico ao que o build-site.mjs espera.
+  // Imagem priorizada: bytes no banco → /api/imagem?slug=X (com cache CDN).
+  // Status 'errada' oculta a imagem do público.
+  const produtos = produtosRows.map(r => {
+    let imagem = null;
+    if (r.foto_status !== 'errada') {
+      if (r.tem_bytes) imagem = `api/imagem?slug=${encodeURIComponent(r.slug)}`;
+      else if (r.imagem_url) imagem = r.imagem_url.replace(/^\//, '');
+    }
+    return ({
     id: r.id,
     slug: r.slug,
     nome: r.nome,
@@ -52,11 +61,9 @@ async function main() {
     ean: r.ean,
     ncm: r.ncm,
     descricaoExtra: r.descricao_extra,
-    // imagens "erradas" são filtradas do site público (não rendem nas páginas)
-    imagem: r.imagem_url && r.foto_status !== 'errada'
-      ? r.imagem_url.replace(/^\//, '')
-      : null,
-  }));
+    imagem,
+  });
+  });
 
   const categorias = categoriasRows.map(r => ({
     slug: r.slug, titulo: r.titulo, descricao: r.descricao,
