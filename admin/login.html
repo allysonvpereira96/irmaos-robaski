@@ -8,15 +8,15 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=3">
-  <link rel="stylesheet" href="admin.css?v=4">
-  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="stylesheet" href="/assets/css/style.css?v=3">
+  <link rel="stylesheet" href="/admin/admin.css?v=4">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
 </head>
 <body>
 
   <div class="login-shell">
     <div class="login-card">
-      <img src="../assets/img/logo.png" class="logo" alt="Irmãos Robaski">
+      <img src="/assets/img/logo.png" class="logo" alt="Irmãos Robaski">
       <h1>Painel Administrativo</h1>
       <p class="sub">Acesso restrito · gestão do catálogo</p>
 
@@ -33,7 +33,7 @@
   </div>
 
   <script type="module">
-    import { api, toast } from './admin.js';
+    import { api, toast } from '/admin/admin.js';
 
     const form = document.getElementById('login-form');
     const btn  = document.getElementById('btn-entrar');

@@ -8,9 +8,9 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="../assets/css/style.css?v=3">
-  <link rel="stylesheet" href="admin.css?v=4">
-  <link rel="icon" type="image/png" sizes="32x32" href="../assets/img/favicon-32.png">
+  <link rel="stylesheet" href="/assets/css/style.css?v=3">
+  <link rel="stylesheet" href="/admin/admin.css?v=4">
+  <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
   <style>
     .fotos-grid {
       display: grid;
@@ -101,7 +101,7 @@
 
     <header class="admin-header">
       <div class="left">
-        <img src="../assets/img/logo-white.png" class="logo" alt="Logo">
+        <img src="/assets/img/logo-white.png" class="logo" alt="Logo">
         <h1>Gestão de Fotos<small>Galeria · Marcação · Substituição</small></h1>
       </div>
       <div class="right">
@@ -164,7 +164,7 @@
   </div>
 
   <script type="module">
-    import { api, toast, escapeHTML, debounce } from './admin.js';
+    import { api, toast, escapeHTML, debounce } from '/admin/admin.js';
     import { upload } from 'https://esm.sh/@vercel/blob@0.27.3/client?bundle';
 
     const state = {
