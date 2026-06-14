@@ -28,3 +28,6 @@ Thumbs.db
 
 .vercel
 .env*
+
+# Imagens dos produtos ficam no Postgres (BYTEA), não vão pro repo
+assets/img/produtos/

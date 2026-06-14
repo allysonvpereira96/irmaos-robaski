@@ -2,6 +2,10 @@
 # Site público acessa via /api/imagem?slug=X.
 assets/img/produtos/
 
+# Scripts de build/migration não precisam estar no deploy
+build/
+db/
+
 # PDF do catálogo é entregável avulso (5 MB), não vai pra produção
 *.pdf
 build/.pdf-cache/
@@ -9,3 +13,6 @@ build/.pdf-cache/
 # Build cache
 data/produtos-raw.json
 data/relatorio-*.csv
+
+# Vercel state
+.vercel/
