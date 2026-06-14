@@ -2,9 +2,8 @@
 # Site público acessa via /api/imagem?slug=X.
 assets/img/produtos/
 
-# Scripts de build/migration não precisam estar no deploy
-build/
-db/
+# Cache de imagens convertidas pro PDF (25MB de JPGs, não vão pra produção)
+build/.pdf-cache/
 
 # PDF do catálogo é entregável avulso (5 MB), não vai pra produção
 *.pdf
