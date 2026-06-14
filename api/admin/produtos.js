@@ -91,10 +91,21 @@ async function list(req, res) {
 
 /* ─── GET ?id=X (1 produto) ─── */
 async function getOne(id, res) {
-  const [row] = await sql`SELECT * FROM produtos WHERE id = ${id}`;
+  // Não trazemos imagem_bytes (pesado). Mas se tiver bytes no banco, geramos
+  // URL pra /api/imagem?slug=X (com cache-buster do hash).
+  const rows = await sql`
+    SELECT id, slug, nome, categoria_slug, categoria_erp, marca,
+           preco, preco_fisica, unidade, ean, ncm, descricao_extra,
+           foto_status, foto_observacao, ativo, created_at, updated_at,
+           imagem_hash,
+           CASE
+             WHEN imagem_bytes IS NOT NULL THEN '/api/imagem?slug=' || slug || '&v=' || COALESCE(imagem_hash, '0')
+             ELSE imagem_url
+           END AS imagem_url
+    FROM produtos WHERE id = ${id}
+  `;
+  const row = rows[0];
   if (!row) return error(res, 404, 'Produto não encontrado');
-  // BYTEA é grande — não retorna no GET admin (admin trabalha só com metadados)
-  delete row.imagem_bytes;
   return json(res, 200, { produto: row });
 }
 
