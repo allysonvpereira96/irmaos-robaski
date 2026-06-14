@@ -44,7 +44,7 @@
       btn.innerHTML = '<span class="spinner"></span> Entrando...';
       try {
         const fd = new FormData(form);
-        const data = await api('/api/admin/login', {
+        const data = await api('/api/admin/auth?action=login', {
           method: 'POST',
           body: { email: fd.get('email'), senha: fd.get('senha') },
         });

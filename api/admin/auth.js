@@ -1,9 +1,43 @@
+/**
+ * /api/admin/auth — endpoint consolidado de autenticação
+ *
+ *  POST ?action=login   body: { email, senha } → cookie + user
+ *  POST ?action=logout  → clear cookie
+ *  GET                  → retorna user logado (precisa cookie)
+ *
+ * Substitui login.js + logout.js + me.js (3 → 1 function) pra ficar
+ * dentro do limite de 12 functions/deploy do Vercel Hobby.
+ */
+
 import { sql } from '../../lib/db.mjs';
-import { verifyPassword, signToken, buildSessionCookie } from '../../lib/auth.mjs';
+import {
+  verifyPassword, signToken, buildSessionCookie, buildClearCookie, requireAuth,
+} from '../../lib/auth.mjs';
 import { json, error, readJsonBody } from '../../lib/http.mjs';
 
 export default async function handler(req, res) {
-  if (req.method !== 'POST') return error(res, 405, 'Use POST');
+  const url = new URL(req.url, 'http://x');
+  const action = url.searchParams.get('action');
+
+  // GET → me
+  if (req.method === 'GET') {
+    const user = requireAuth(req, res);
+    if (!user) return;
+    return json(res, 200, {
+      user: { id: user.userId, email: user.email, nome: user.nome, role: user.role },
+    });
+  }
+
+  if (req.method !== 'POST') return error(res, 405, 'Use GET ou POST');
+
+  // POST ?action=logout → clear cookie
+  if (action === 'logout') {
+    res.setHeader('Set-Cookie', buildClearCookie());
+    return json(res, 200, { ok: true });
+  }
+
+  // POST ?action=login → autentica
+  if (action !== 'login') return error(res, 400, 'action obrigatório (login|logout)');
 
   let body;
   try { body = await readJsonBody(req); }

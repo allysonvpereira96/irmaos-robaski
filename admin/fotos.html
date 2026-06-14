@@ -279,7 +279,7 @@
 
     async function updateStatus(id, foto_status) {
       try {
-        await api('/api/admin/foto?id=' + encodeURIComponent(id), {
+        await api('/api/admin/fotos?id=' + encodeURIComponent(id), {
           method: 'PATCH', body: { foto_status },
         });
         toast(`Marcada como ${foto_status === 'errada' ? 'ERRADA' : 'OK'}`, 'success');
@@ -315,7 +315,7 @@
           access: 'public',
           handleUploadUrl: '/api/admin/upload',
         });
-        await api('/api/admin/foto?id=' + encodeURIComponent(id), {
+        await api('/api/admin/fotos?id=' + encodeURIComponent(id), {
           method: 'PATCH',
           body: { imagem_url: blob.url, foto_status: 'ok' },
         });
@@ -344,7 +344,7 @@
     document.getElementById('modal-save').addEventListener('click', async () => {
       const obs = document.getElementById('modal-obs-text').value.trim();
       try {
-        await api('/api/admin/foto?id=' + encodeURIComponent(modalProdId), {
+        await api('/api/admin/fotos?id=' + encodeURIComponent(modalProdId), {
           method: 'PATCH', body: { foto_observacao: obs || null },
         });
         toast('Observação salva', 'success');

@@ -136,7 +136,7 @@
     async function loadProduto() {
       if (!isEdit) return;
       try {
-        const { produto: p } = await api('/api/admin/produto?id=' + encodeURIComponent(id));
+        const { produto: p } = await api('/api/admin/produtos?id=' + encodeURIComponent(id));
         produto = p;
         ['nome', 'marca', 'id', 'ean', 'unidade', 'ncm', 'descricao_extra'].forEach(k => {
           const el = document.getElementById(k);
@@ -227,7 +227,7 @@
 
       try {
         if (isEdit) {
-          await api('/api/admin/produto?id=' + encodeURIComponent(id), { method: 'PATCH', body });
+          await api('/api/admin/produtos?id=' + encodeURIComponent(id), { method: 'PATCH', body });
           toast('Produto atualizado', 'success');
         } else {
           const idValue = fd.get('id') || '';
@@ -251,7 +251,7 @@
     document.getElementById('btn-excluir').addEventListener('click', async () => {
       if (!confirm(`Excluir DEFINITIVAMENTE o produto "${produto?.nome}"?\n\nEssa ação não pode ser desfeita.`)) return;
       try {
-        await api('/api/admin/produto?id=' + encodeURIComponent(id) + '&hard=1', { method: 'DELETE' });
+        await api('/api/admin/produtos?id=' + encodeURIComponent(id) + '&hard=1', { method: 'DELETE' });
         toast('Produto excluído', 'success');
         setTimeout(() => location.href = './', 500);
       } catch (e) {

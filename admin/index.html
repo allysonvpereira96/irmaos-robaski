@@ -98,12 +98,12 @@
     /* ─── Header user info + logout + rebuild ─── */
     async function initHeader() {
       try {
-        const { user } = await api('/api/admin/me');
+        const { user } = await api('/api/admin/auth');
         document.getElementById('user-chip').textContent = user.nome;
       } catch { /* api() já redireciona se 401 */ }
     }
     document.getElementById('btn-logout').addEventListener('click', async () => {
-      try { await api('/api/admin/logout', { method: 'POST' }); } catch {}
+      try { await api('/api/admin/auth?action=logout', { method: 'POST' }); } catch {}
       location.href = 'login.html';
     });
     document.getElementById('btn-rebuild').addEventListener('click', async (e) => {
@@ -212,7 +212,7 @@
           const nome = btn.getAttribute('data-nome');
           if (!confirm(`Desativar o produto "${nome}"?\n\nEle não aparece mais no site, mas fica salvo (pode reativar depois).`)) return;
           try {
-            await api('/api/admin/produto?id=' + encodeURIComponent(id), { method: 'DELETE' });
+            await api('/api/admin/produtos?id=' + encodeURIComponent(id), { method: 'DELETE' });
             toast('Produto desativado', 'success');
             loadProdutos();
             loadStats();
@@ -276,7 +276,7 @@
           access: 'public',
           handleUploadUrl: '/api/admin/upload',
         });
-        await api('/api/admin/foto?id=' + encodeURIComponent(id), {
+        await api('/api/admin/fotos?id=' + encodeURIComponent(id), {
           method: 'PATCH',
           body: { imagem_url: blob.url, foto_status: 'ok' },
         });
