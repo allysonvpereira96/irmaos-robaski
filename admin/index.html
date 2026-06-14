@@ -87,7 +87,7 @@
   </div>
 
   <script type="module">
-    import { api, toast, escapeHTML, debounce, uploadFoto } from '/admin/admin.js?v=2';
+    import { api, toast, escapeHTML, debounce, uploadFoto } from '/admin/admin.js?v=3';
 
     const state = {
       page: 1, size: 50, q: '', cat: '', ativo: '1',
@@ -179,10 +179,10 @@
         return;
       }
       tbody.innerHTML = rows.map(r => `
-        <tr>
+        <tr class="row-clickable" data-edit="${encodeURIComponent(r.id)}">
           <td class="col-img">
             ${r.imagem_url
-              ? `<img src="${escapeHTML(r.imagem_url)}" alt="" loading="lazy">`
+              ? `<img src="${escapeHTML(r.imagem_url)}" alt="" loading="lazy" data-zoom="${escapeHTML(r.imagem_url)}" data-zoom-label="${escapeHTML(r.nome)}" title="Clique pra ampliar">`
               : `<div class="placeholder">sem foto</div>`}
           </td>
           <td>
@@ -200,13 +200,34 @@
         </tr>
       `).join('');
 
+      // Click na thumbnail → lightbox (foto grande)
+      tbody.querySelectorAll('img[data-zoom]').forEach(img => {
+        img.addEventListener('click', e => {
+          e.stopPropagation(); // não propaga pro row-clickable
+          openLightbox(img.dataset.zoom, img.dataset.zoomLabel);
+        });
+        img.style.cursor = 'zoom-in';
+      });
+
+      // Click em qualquer área da linha (exceto botões/links/imgs) → edita
+      tbody.querySelectorAll('tr[data-edit]').forEach(tr => {
+        tr.addEventListener('click', e => {
+          if (e.target.closest('button, a, img[data-zoom]')) return;
+          location.href = 'produto.html?id=' + tr.getAttribute('data-edit');
+        });
+      });
+
       // Trocar foto inline (modal de upload)
       tbody.querySelectorAll('button[data-foto]').forEach(btn => {
-        btn.addEventListener('click', () => triggerUploadFoto(decodeURIComponent(btn.getAttribute('data-foto'))));
+        btn.addEventListener('click', e => {
+          e.stopPropagation();
+          triggerUploadFoto(decodeURIComponent(btn.getAttribute('data-foto')));
+        });
       });
 
       tbody.querySelectorAll('button[data-del]').forEach(btn => {
-        btn.addEventListener('click', async () => {
+        btn.addEventListener('click', async e => {
+          e.stopPropagation();
           const id = decodeURIComponent(btn.getAttribute('data-del'));
           const nome = btn.getAttribute('data-nome');
           if (!confirm(`Desativar o produto "${nome}"?\n\nEle não aparece mais no site, mas fica salvo (pode reativar depois).`)) return;

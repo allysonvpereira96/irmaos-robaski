@@ -119,9 +119,12 @@ body { background: var(--bg-soft); }
 .admin-table { width: 100%; border-collapse: collapse; font-size: 13px; }
 .admin-table th, .admin-table td { padding: 10px 12px; text-align: left; }
 .admin-table th { background: var(--bg-soft); font-size: 11px; text-transform: uppercase; letter-spacing: 0.06em; color: var(--text-muted); font-weight: 700; border-bottom: 1px solid var(--border); }
-.admin-table tr { border-bottom: 1px solid var(--border-soft); }
+.admin-table tr { border-bottom: 1px solid var(--border-soft); transition: background 0.12s; }
 .admin-table tr:last-child { border-bottom: 0; }
-.admin-table tr:hover { background: var(--bg-soft); }
+.admin-table tr:hover { background: var(--brand-50); }
+.admin-table tr.row-clickable { cursor: pointer; }
+.admin-table tr.row-clickable:hover .nome { color: var(--brand); text-decoration: underline; text-underline-offset: 2px; }
+.admin-table tr.row-clickable:hover td:first-child { box-shadow: inset 3px 0 0 var(--brand); }
 .admin-table .col-img { width: 60px; }
 .admin-table .col-img img { width: 44px; height: 44px; object-fit: contain; background: var(--bg-soft); border-radius: 4px; padding: 3px; }
 .admin-table .col-img .placeholder { width: 44px; height: 44px; background: var(--border-soft); border-radius: 4px; display: flex; align-items: center; justify-content: center; color: var(--text-soft); font-size: 10px; }

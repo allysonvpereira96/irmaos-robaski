@@ -164,7 +164,7 @@
   </div>
 
   <script type="module">
-    import { api, toast, escapeHTML, debounce, uploadFoto } from '/admin/admin.js?v=2';
+    import { api, toast, escapeHTML, debounce, uploadFoto, openLightbox } from '/admin/admin.js?v=3';
 
     const state = {
       page: 1, size: 60, q: '', cat: '', status: '',
@@ -260,6 +260,15 @@
 
     function bindCard(card) {
       const id = card.getAttribute('data-id');
+
+      // Click na imagem (não no placeholder) → lightbox
+      const imgZone = card.querySelector('.img[data-zoom]');
+      if (imgZone) {
+        imgZone.style.cursor = 'zoom-in';
+        imgZone.addEventListener('click', () => {
+          openLightbox(imgZone.getAttribute('data-zoom'), imgZone.getAttribute('data-zoom-label'));
+        });
+      }
 
       card.querySelector('[data-act="upload"]').addEventListener('click', () => triggerUpload(id));
 

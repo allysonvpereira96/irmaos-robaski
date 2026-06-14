@@ -45,6 +45,59 @@ export function toast(msg, type = '') {
   }, type === 'error' ? 6000 : 3000);
 }
 
+/* ─── Lightbox (modal de imagem em tamanho grande) ─── */
+let lightboxEl = null;
+function ensureLightbox() {
+  if (lightboxEl) return lightboxEl;
+  const css = `
+    .lb-bg { position: fixed; inset: 0; background: rgba(0,0,0,0.85); z-index: 9999;
+             display: none; align-items: center; justify-content: center; padding: 40px;
+             animation: lbFade .15s ease-out; }
+    .lb-bg.open { display: flex; }
+    @keyframes lbFade { from {opacity:0} to {opacity:1} }
+    .lb-img { max-width: 100%; max-height: 90vh; object-fit: contain;
+              background: #fff; border-radius: 8px; padding: 8px;
+              box-shadow: 0 20px 60px rgba(0,0,0,.5); }
+    .lb-info { position: absolute; left: 0; right: 0; bottom: 16px; text-align: center;
+               color: #fff; font-size: 14px; font-weight: 500;
+               text-shadow: 0 2px 8px rgba(0,0,0,.8); pointer-events: none; }
+    .lb-close { position: absolute; top: 18px; right: 22px; width: 40px; height: 40px;
+                background: rgba(255,255,255,.15); color: #fff; border: 0;
+                border-radius: 50%; font-size: 22px; cursor: pointer;
+                display: flex; align-items: center; justify-content: center;
+                transition: background .12s; }
+    .lb-close:hover { background: rgba(255,255,255,.3); }
+  `;
+  const style = document.createElement('style');
+  style.textContent = css;
+  document.head.appendChild(style);
+
+  lightboxEl = document.createElement('div');
+  lightboxEl.className = 'lb-bg';
+  lightboxEl.innerHTML = `
+    <button class="lb-close" aria-label="Fechar">×</button>
+    <img class="lb-img" alt="">
+    <div class="lb-info"></div>
+  `;
+  document.body.appendChild(lightboxEl);
+  lightboxEl.addEventListener('click', e => {
+    if (e.target === lightboxEl || e.target.classList.contains('lb-close')) {
+      lightboxEl.classList.remove('open');
+    }
+  });
+  document.addEventListener('keydown', e => {
+    if (e.key === 'Escape') lightboxEl.classList.remove('open');
+  });
+  return lightboxEl;
+}
+export function openLightbox(url, label = '') {
+  const lb = ensureLightbox();
+  lb.querySelector('.lb-img').src = url;
+  lb.querySelector('.lb-img').alt = label;
+  lb.querySelector('.lb-info').textContent = label;
+  lb.classList.add('open');
+}
+
 /* ─── Upload de foto ─── */
 /**
  * Sobe a foto pro Postgres via /api/admin/upload.
