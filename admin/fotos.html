@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/style.css?v=3">
-  <link rel="stylesheet" href="/admin/admin.css?v=4">
+  <link rel="stylesheet" href="/admin/admin.css?v=5">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
   <style>
     .fotos-grid {
@@ -164,8 +164,7 @@
   </div>
 
   <script type="module">
-    import { api, toast, escapeHTML, debounce } from '/admin/admin.js';
-    import { upload } from 'https://esm.sh/@vercel/blob@0.27.3/client?bundle';
+    import { api, toast, escapeHTML, debounce, uploadFoto } from '/admin/admin.js?v=2';
 
     const state = {
       page: 1, size: 60, q: '', cat: '', status: '',
@@ -309,16 +308,7 @@
       if (card) card.querySelector('.img').innerHTML = '<span class="spinner"></span>';
 
       try {
-        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-        const filename = `produtos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-        const blob = await upload(filename, file, {
-          access: 'public',
-          handleUploadUrl: '/api/admin/upload',
-        });
-        await api('/api/admin/fotos?id=' + encodeURIComponent(id), {
-          method: 'PATCH',
-          body: { imagem_url: blob.url, foto_status: 'ok' },
-        });
+        await uploadFoto(id, file);
         toast('Foto trocada', 'success');
         loadFotos();
       } catch (e) {

@@ -9,7 +9,7 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="/assets/css/style.css?v=3">
-  <link rel="stylesheet" href="/admin/admin.css?v=4">
+  <link rel="stylesheet" href="/admin/admin.css?v=5">
   <link rel="icon" type="image/png" sizes="32x32" href="/assets/img/favicon-32.png">
 </head>
 <body>
@@ -111,7 +111,7 @@
   </div>
 
   <script type="module">
-    import { api, toast, escapeHTML, qs } from '/admin/admin.js';
+    import { api, toast, escapeHTML, qs } from '/admin/admin.js?v=2';
     import { upload } from 'https://esm.sh/@vercel/blob@0.27.3/client?bundle';
 
     const id = qs('id');
@@ -180,26 +180,25 @@
     });
 
     async function handleFile(file) {
-      if (file.size > 8 * 1024 * 1024) {
-        toast('Arquivo muito grande (máx 8MB)', 'error');
+      const editingId = qs('id');
+      if (!editingId) {
+        toast('Salve o produto primeiro, depois envie a foto.', 'error');
+        return;
+      }
+      if (file.size > 4 * 1024 * 1024) {
+        toast('Arquivo muito grande (máx 4MB)', 'error');
         return;
       }
       zone.classList.add('uploading');
       placeholder.style.display = 'block';
       placeholder.innerHTML = '<span class="spinner"></span> Enviando...';
       try {
-        const ext = (file.name.split('.').pop() || 'jpg').toLowerCase();
-        const filename = `produtos/${Date.now()}-${Math.random().toString(36).slice(2, 8)}.${ext}`;
-        const blob = await upload(filename, file, {
-          access: 'public',
-          handleUploadUrl: '/api/admin/upload',
-        });
-        showPreview(blob.url);
-        document.getElementById('imagem_url').value = blob.url;
-        toast('Imagem enviada', 'success');
+        const r = await uploadFoto(editingId, file);
+        showPreview(r.imagem_url);
+        toast('Imagem salva no banco', 'success');
       } catch (e) {
         toast('Falha no upload: ' + e.message, 'error');
-        placeholder.innerHTML = '<div class="placeholder-icon">📷</div><div class="label">Clique ou arraste a foto aqui</div><div class="help">PNG, JPG ou WebP · até 8MB</div>';
+        placeholder.innerHTML = '<div class="placeholder-icon">📷</div><div class="label">Clique ou arraste a foto aqui</div><div class="help">PNG, JPG ou WebP · até 4MB</div>';
       } finally {
         zone.classList.remove('uploading');
       }

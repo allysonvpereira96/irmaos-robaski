@@ -45,6 +45,35 @@ export function toast(msg, type = '') {
   }, type === 'error' ? 6000 : 3000);
 }
 
+/* ─── Upload de foto ─── */
+/**
+ * Sobe a foto pro Postgres via /api/admin/upload.
+ * Lê o arquivo como base64 e envia em JSON.
+ *
+ * @param {string} produtoId
+ * @param {File} file
+ * @returns {Promise<{ok: true, imagem_url: string, hash: string}>}
+ */
+export async function uploadFoto(produtoId, file) {
+  // limite prévio (mais informativo que erro do servidor)
+  const MAX_FILE = 4 * 1024 * 1024; // 4 MB original (vira ~5.3 MB base64)
+  if (file.size > MAX_FILE) {
+    throw new Error(`Arquivo muito grande (${(file.size / 1024 / 1024).toFixed(1)} MB). Limite: 4 MB.`);
+  }
+
+  const data = await new Promise((resolve, reject) => {
+    const r = new FileReader();
+    r.onload = () => resolve(r.result.split(',')[1]); // remove "data:image/...;base64,"
+    r.onerror = () => reject(new Error('Falha ao ler arquivo'));
+    r.readAsDataURL(file);
+  });
+
+  return api('/api/admin/upload', {
+    method: 'POST',
+    body: { produto_id: produtoId, mime: file.type, data },
+  });
+}
+
 /* ─── Helpers ─── */
 export function escapeHTML(s) {
   return String(s ?? '').replace(/[&<>"']/g, c =>
