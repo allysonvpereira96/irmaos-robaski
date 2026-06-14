@@ -65,8 +65,14 @@ async function list(req, res) {
 
   params.push(size);   const pSize = params.length;
   params.push(offset); const pOffset = params.length;
+  // Resolve imagem_url: prioridade pra bytes no banco (via /api/imagem)
   const rows = await sql(`
-    SELECT id, slug, nome, categoria_slug, marca, unidade, ean, imagem_url, ativo, updated_at
+    SELECT id, slug, nome, categoria_slug, marca, unidade, ean,
+           CASE
+             WHEN imagem_bytes IS NOT NULL THEN '/api/imagem?slug=' || slug
+             ELSE imagem_url
+           END AS imagem_url,
+           foto_status, ativo, updated_at
     FROM produtos
     ${whereSQL}
     ORDER BY updated_at DESC, nome ASC
