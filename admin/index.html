@@ -22,8 +22,8 @@
         <h1>Painel Administrativo<small>Gestão de produtos · Irmãos Robaski</small></h1>
       </div>
       <div class="right">
-        <a href="fotos.html" class="btn-logout" title="Gestão das fotos do catálogo">📷 Fotos</a>
-        <a href="upload-massa.html" class="btn-logout" title="Upload de várias fotos com matching automático">⬆ Massa</a>
+        <a href="/admin/fotos.html" class="btn-logout" title="Gestão das fotos do catálogo">📷 Fotos</a>
+        <a href="/admin/upload-massa.html" class="btn-logout" title="Upload de várias fotos com matching automático">⬆ Massa</a>
         <span class="user-chip" id="user-chip"></span>
         <button class="btn-rebuild" id="btn-rebuild" title="Aplicar mudanças no site público">
           ↻ Aplicar no site
@@ -54,7 +54,7 @@
           <option value="">Todos (ativos + inativos)</option>
         </select>
         <div class="grow"></div>
-        <a href="produto.html" class="btn-add">+ Novo produto</a>
+        <a href="/admin/produto.html" class="btn-add">+ Novo produto</a>
       </div>
 
       <!-- Tabela -->
@@ -103,7 +103,7 @@
     }
     document.getElementById('btn-logout').addEventListener('click', async () => {
       try { await api('/api/admin/auth?action=logout', { method: 'POST' }); } catch {}
-      location.href = 'login.html';
+      location.href = '/admin/login.html';
     });
     document.getElementById('btn-rebuild').addEventListener('click', async (e) => {
       const btn = e.currentTarget;
@@ -194,7 +194,7 @@
           <td><span class="badge ${r.ativo ? 'ativo' : 'inativo'}">${r.ativo ? 'ATIVO' : 'INATIVO'}</span></td>
           <td class="actions">
             <button data-foto="${encodeURIComponent(r.id)}" title="Trocar foto rápido">📷</button>
-            <a href="produto.html?id=${encodeURIComponent(r.id)}"><button>Editar</button></a>
+            <a href="/admin/produto.html?id=${encodeURIComponent(r.id)}"><button>Editar</button></a>
             <button class="danger" data-del="${encodeURIComponent(r.id)}" data-nome="${escapeHTML(r.nome)}">Excluir</button>
           </td>
         </tr>
@@ -213,7 +213,7 @@
       tbody.querySelectorAll('tr[data-edit]').forEach(tr => {
         tr.addEventListener('click', e => {
           if (e.target.closest('button, a, img[data-zoom]')) return;
-          location.href = 'produto.html?id=' + tr.getAttribute('data-edit');
+          location.href = '/admin/produto.html?id=' + tr.getAttribute('data-edit');
         });
       });
 

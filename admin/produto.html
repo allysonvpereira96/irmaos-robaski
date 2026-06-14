@@ -21,7 +21,7 @@
         <h1 id="page-title">Novo Produto<small>Painel · Irmãos Robaski</small></h1>
       </div>
       <div class="right">
-        <a href="./" class="btn-logout">‹ Voltar</a>
+        <a href="/admin/" class="btn-logout">‹ Voltar</a>
       </div>
     </header>
 
@@ -101,7 +101,7 @@
           <div class="form-actions">
             <button type="button" id="btn-excluir" class="btn btn-outline" style="color: var(--danger); border-color: var(--danger); display: none;">Excluir definitivamente</button>
             <div class="grow"></div>
-            <a href="./" class="btn btn-outline">Cancelar</a>
+            <a href="/admin/" class="btn btn-outline">Cancelar</a>
             <button type="submit" class="btn btn-primary" id="btn-salvar">Salvar</button>
           </div>
         </form>
@@ -234,10 +234,10 @@
           body.slug = slug;
           const r = await api('/api/admin/produtos', { method: 'POST', body });
           toast('Produto criado', 'success');
-          setTimeout(() => location.href = 'produto.html?id=' + encodeURIComponent(r.produto.id), 600);
+          setTimeout(() => location.href = '/admin/produto.html?id=' + encodeURIComponent(r.produto.id), 600);
           return;
         }
-        setTimeout(() => location.href = './', 600);
+        setTimeout(() => location.href = '/admin/', 600);
       } catch (e) {
         toast(e.message, 'error');
         btn.disabled = false;
@@ -251,7 +251,7 @@
       try {
         await api('/api/admin/produtos?id=' + encodeURIComponent(id) + '&hard=1', { method: 'DELETE' });
         toast('Produto excluído', 'success');
-        setTimeout(() => location.href = './', 500);
+        setTimeout(() => location.href = '/admin/', 500);
       } catch (e) {
         toast(e.message, 'error');
       }
