@@ -22,7 +22,9 @@ const P_DIR = join(SITE_DIR, 'p');
 const CAT_DIR = join(SITE_DIR, 'categorias');
 
 const ORIGIN = 'https://irmaosrobaski.com.br'; // ⚠ trocar quando domínio for confirmado
-const WHATSAPP = '5551999999999';              // ⚠ trocar quando WhatsApp real for confirmado
+const WHATSAPP = '5551996396818';              // (51) 99639-6818
+const WHATSAPP_DISPLAY = '(51) 99639-6818';
+const HORARIO_DISPLAY = 'Seg a Sex 8h–18h30 · Sáb 8h–12h';
 
 /* ════════════════════════════════════════════════════════════════
    Helpers
@@ -115,8 +117,9 @@ const FOOTER = (level = 0) => {
         <div class="footer-col">
           <h4>Contato</h4>
           <ul>
-            <li><a href="https://wa.me/${WHATSAPP}">WhatsApp · (a definir)</a></li>
+            <li><a href="https://wa.me/${WHATSAPP}?text=Ol%C3%A1%21%20Gostaria%20de%20fazer%20um%20pedido.">WhatsApp · ${WHATSAPP_DISPLAY}</a></li>
             <li>contato@irmaosrobaski.com.br</li>
+            <li style="opacity:.85;">${HORARIO_DISPLAY}</li>
           </ul>
         </div>
       </div>
@@ -332,7 +335,7 @@ ${NAVBAR(1)}
     })};
   </script>
   <script src="../assets/js/main.js"></script>
-  <script src="../assets/js/cart.js?v=2"></script>
+  <script src="../assets/js/cart.js?v=3"></script>
   <script>
     /* Bind do qty + add to cart */
     document.addEventListener('DOMContentLoaded', () => {
@@ -470,7 +473,7 @@ ${NAVBAR(1)}
   ${WPP_FLOAT}
 
   <script src="../assets/js/main.js"></script>
-  <script src="../assets/js/cart.js?v=2"></script>
+  <script src="../assets/js/cart.js?v=3"></script>
 </body>
 </html>`;
 }

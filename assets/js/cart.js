@@ -20,9 +20,7 @@
   'use strict';
 
   const STORAGE_KEY = 'robaski_cart_v1';
-  /* ATENÇÃO: trocar pelo WhatsApp real após o briefing.
-     O número do site atual (5531900000000) é placeholder de MG e está errado. */
-  const WHATSAPP_NUMBER = '5551999999999';
+  const WHATSAPP_NUMBER = '5551996396818';
 
   /* ─── Storage ─── */
   function load() {
