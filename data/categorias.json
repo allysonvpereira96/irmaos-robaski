@@ -13,7 +13,7 @@
     "descricao": "Vinhos tintos, brancos, sidras e espumantes para revenda e eventos.",
     "ordem": 2,
     "icone": "wine",
-    "count": 87
+    "count": 88
   },
   {
     "slug": "destilados-e-coqueteis",
@@ -93,7 +93,7 @@
     "descricao": "Ketchup, mostarda, maionese, molho de tomate, azeitona, conservas e enlatados.",
     "ordem": 12,
     "icone": "soup",
-    "count": 109
+    "count": 111
   },
   {
     "slug": "limpeza",
@@ -101,7 +101,7 @@
     "descricao": "Água sanitária, detergente, desinfetante, álcool, ceras, esponjas e sacos de lixo.",
     "ordem": 13,
     "icone": "spray-can",
-    "count": 164
+    "count": 165
   },
   {
     "slug": "descartaveis",
@@ -109,7 +109,7 @@
     "descricao": "Copos, pratos, guardanapos, luvas, papel toalha e higiênico.",
     "ordem": 14,
     "icone": "package-open",
-    "count": 149
+    "count": 151
   },
   {
     "slug": "embalagens",
@@ -117,7 +117,7 @@
     "descricao": "Sacolas, bobinas, potes, bandejas, papel kraft, filme, etiqueta e alumínio.",
     "ordem": 15,
     "icone": "package",
-    "count": 520
+    "count": 524
   },
   {
     "slug": "utilidades-domesticas",

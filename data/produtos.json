@@ -1335,6 +1335,21 @@
     "imagem": "api/imagem?slug=arroz-branco-agulh-namorado-1kg-4551"
   },
   {
+    "id": "4625",
+    "slug": "assadeira-4l-life-clean-4625",
+    "nome": "ASSADEIRA 4L LIFE CLEAN",
+    "categoriaErp": "DESCARTAVEIS_SEM_ST_NEW",
+    "categoriaHumana": "descartaveis",
+    "marca": "LIFE CLEAN",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=assadeira-4l-life-clean-4625"
+  },
+  {
     "id": "4223",
     "slug": "assadeira-de-papel-redonda-c-furo-no-meio-14cm-4223",
     "nome": "ASSADEIRA DE PAPEL REDONDA C/FURO NO MEIO 14CM",
@@ -2308,6 +2323,21 @@
     "ncm": "21039091",
     "descricaoExtra": null,
     "imagem": "api/imagem?slug=barbecue-sache-fugini-144-7gr-4262"
+  },
+  {
+    "id": "4617",
+    "slug": "base-reta-com-haste-pvc-verde-4617",
+    "nome": "BASE RETA COM HASTE PVC VERDE",
+    "categoriaErp": "BOBINAS_NEW",
+    "categoriaHumana": "embalagens",
+    "marca": null,
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=base-reta-com-haste-pvc-verde-4617"
   },
   {
     "id": "4322",
@@ -9855,6 +9885,36 @@
     "imagem": "api/imagem?slug=emb-red-torta-p-t-alta-base-preta-1-7kg-v50-vierpack-4212"
   },
   {
+    "id": "4623",
+    "slug": "emb-redonda-alta-torta-grande-bp-60a-br-bopack-4623",
+    "nome": "EMB. REDONDA ALTA TORTA GRANDE BP-60A BR. BOPACK",
+    "categoriaErp": "POTES_BANDEJAS_NEW",
+    "categoriaHumana": "embalagens",
+    "marca": "BOPACK",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=emb-redonda-alta-torta-grande-bp-60a-br-bopack-4623"
+  },
+  {
+    "id": "4622",
+    "slug": "emb-redonda-alta-torta-peq-bp-50a-branca-bopack-4622",
+    "nome": "EMB. REDONDA ALTA TORTA PEQ. BP-50A BRANCA BOPACK",
+    "categoriaErp": "POTES_BANDEJAS_NEW",
+    "categoriaHumana": "embalagens",
+    "marca": "BOPACK",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=emb-redonda-alta-torta-peq-bp-50a-branca-bopack-4622"
+  },
+  {
     "id": "3641",
     "slug": "emb-redonda-artic-bp-640-1-doce-bipack-3641",
     "nome": "EMB. REDONDA. ARTIC. BP-640 1 DOCE BIPACK",
@@ -12496,18 +12556,18 @@
   },
   {
     "id": "4616",
-    "slug": "etiqueta-90x30-ch-nad-gl-ser-tr-br-suprimax-4616",
-    "nome": "ETIQUETA 90X30 CH NAD GL SER TR BR SUPRIMAX",
+    "slug": "etiqueta-90x30-oh-nad-gl-ser-tr-br-suprimax-c-2un-4616",
+    "nome": "ETIQUETA 90X30 OH NAD GL SER. TR. BR. SUPRIMAX C/2UN",
     "categoriaErp": "ETIQUETA_III_NEW",
     "categoriaHumana": "embalagens",
     "marca": "SUPRIMAX",
     "preco": null,
     "precoFisica": null,
-    "unidade": "Unidade",
+    "unidade": "DP",
     "ean": null,
     "ncm": "48219000",
     "descricaoExtra": null,
-    "imagem": "api/imagem?slug=etiqueta-90x30-ch-nad-gl-ser-tr-br-suprimax-4616"
+    "imagem": "api/imagem?slug=etiqueta-90x30-oh-nad-gl-ser-tr-br-suprimax-c-2un-4616"
   },
   {
     "id": "3032",
@@ -13771,8 +13831,8 @@
   },
   {
     "id": "4614",
-    "slug": "fita-adesiva-transparente-48mmx100mm-4614",
-    "nome": "FITA ADESIVA TRANSPARENTE 48MMX100MM",
+    "slug": "fita-adesiva-transparente-4614",
+    "nome": "FITA ADESIVA TRANSPARENTE",
     "categoriaErp": "UTILIDADE_NEW",
     "categoriaHumana": "utilidades-domesticas",
     "marca": null,
@@ -13782,7 +13842,7 @@
     "ean": null,
     "ncm": "39191010",
     "descricaoExtra": null,
-    "imagem": "api/imagem?slug=fita-adesiva-transparente-48mmx100mm-4614"
+    "imagem": "api/imagem?slug=fita-adesiva-transparente-4614"
   },
   {
     "id": "4023",
@@ -13831,18 +13891,18 @@
   },
   {
     "id": "4615",
-    "slug": "folha-de-oficio-a4-office-paperc-500-folhas-4615",
-    "nome": "FOLHA DE OFICIO A4 OFFICE PAPERC/500 FOLHAS",
+    "slug": "folha-de-oficio-a4-office-paper-c-500-folhas-4615",
+    "nome": "FOLHA DE OFICIO A4 OFFICE PAPER C/500 FOLHAS",
     "categoriaErp": "UTILIDADE_NEW",
     "categoriaHumana": "utilidades-domesticas",
-    "marca": null,
+    "marca": "OFFICE PAPER",
     "preco": 39.35,
     "precoFisica": null,
     "unidade": "Unidade",
     "ean": null,
     "ncm": "48025610",
     "descricaoExtra": null,
-    "imagem": "api/imagem?slug=folha-de-oficio-a4-office-paperc-500-folhas-4615"
+    "imagem": "api/imagem?slug=folha-de-oficio-a4-office-paper-c-500-folhas-4615"
   },
   {
     "id": "2295",
@@ -18750,6 +18810,21 @@
     "imagem": "api/imagem?slug=pano-esfregao-alvejado-p-piso-alklin-m-40x67cm-4022"
   },
   {
+    "id": "4626",
+    "slug": "pano-top-600-28x240m-life-clean-4626",
+    "nome": "PANO TOP 600 28X240M LIFE CLEAN",
+    "categoriaErp": "DESCARTAVEIS_SEM_ST_NEW",
+    "categoriaHumana": "descartaveis",
+    "marca": "LIFE CLEAN",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=pano-top-600-28x240m-life-clean-4626"
+  },
+  {
     "id": "3849",
     "slug": "panos-vabene-multuso-28x50cm-azul-c-5-3849",
     "nome": "PANOS VABENE MULTUSO 28X50CM AZUL C/5",
@@ -19573,6 +19648,21 @@
     "ncm": "20011000",
     "descricaoExtra": null,
     "imagem": "api/imagem?slug=pepino-ivoti-bag-550gr-3873"
+  },
+  {
+    "id": "4620",
+    "slug": "pepinos-em-rodelas-agri-doce-henmer-440gr-4620",
+    "nome": "PEPINOS EM RODELAS AGRI DOCE HENMER 440GR",
+    "categoriaErp": "CONSERVAS_SEM_ST_NEW",
+    "categoriaHumana": "molhos-e-conservas",
+    "marca": "HENMER",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=pepinos-em-rodelas-agri-doce-henmer-440gr-4620"
   },
   {
     "id": "4405",
@@ -22170,6 +22260,21 @@
     "imagem": "api/imagem?slug=saco-de-lixo-100lt-junior-0-6-3075"
   },
   {
+    "id": "4618",
+    "slug": "saco-de-lixo-100lt-junior-0-7-4618",
+    "nome": "SACO DE LIXO 100LT JUNIOR 0,7",
+    "categoriaErp": "SACO_LIXO_II_NEW",
+    "categoriaHumana": "limpeza",
+    "marca": "JUNIOR",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=saco-de-lixo-100lt-junior-0-7-4618"
+  },
+  {
     "id": "3245",
     "slug": "saco-de-lixo-100lt-lix-flex-preto-c-5-rolo-3245",
     "nome": "SACO DE LIXO 100LT LIX FLEX PRETO C/ 5 - ROLO",
@@ -22933,6 +23038,21 @@
     "ncm": "39232110",
     "descricaoExtra": null,
     "imagem": "api/imagem?slug=sacola-30x40-branca-cx-com-1-000-un-reforcada-3469"
+  },
+  {
+    "id": "4624",
+    "slug": "sacola-30x40-branca-gold-cx-c-1000-4624",
+    "nome": "SACOLA 30X40 BRANCA GOLD CX C/1000",
+    "categoriaErp": "SACOLAS_NEW",
+    "categoriaHumana": "embalagens",
+    "marca": "GOLD",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Caixa",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=sacola-30x40-branca-gold-cx-c-1000-4624"
   },
   {
     "id": "4445",
@@ -25348,6 +25468,21 @@
     "ncm": "21039021",
     "descricaoExtra": null,
     "imagem": "api/imagem?slug=sazon-feijao-60gr-4491"
+  },
+  {
+    "id": "4621",
+    "slug": "sazon-floppy-toque-alho-60gr-4621",
+    "nome": "SAZON FLOPPY TOQUE ALHO 60GR",
+    "categoriaErp": "MOLHO_TOMATE_NEW",
+    "categoriaHumana": "molhos-e-conservas",
+    "marca": "SAZON",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=sazon-floppy-toque-alho-60gr-4621"
   },
   {
     "id": "4492",
@@ -28438,6 +28573,21 @@
     "ncm": "22042100",
     "descricaoExtra": "VINHO Rose SUAVe 12 X 750 ML CANCAO",
     "imagem": "api/imagem?slug=vinho-rose-suave-750-ml-cancao-3114"
+  },
+  {
+    "id": "4619",
+    "slug": "vinho-rose-suave-bordo-delgrano-gold-750ml-4619",
+    "nome": "VINHO ROSE SUAVE BORDO DELGRANO GOLD 750ML",
+    "categoriaErp": "BEBIDA_VII_NEW",
+    "categoriaHumana": "vinhos-e-espumantes",
+    "marca": "DELGRANO",
+    "preco": null,
+    "precoFisica": null,
+    "unidade": "Unidade",
+    "ean": null,
+    "ncm": null,
+    "descricaoExtra": null,
+    "imagem": "api/imagem?slug=vinho-rose-suave-bordo-delgrano-gold-750ml-4619"
   },
   {
     "id": "3818",
