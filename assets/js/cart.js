@@ -20,7 +20,7 @@
   'use strict';
 
   const STORAGE_KEY = 'robaski_cart_v1';
-  const WHATSAPP_NUMBER = '5551996396818';
+  const WHATSAPP_NUMBER = '5551998643154';
 
   /* ─── Storage ─── */
   function load() {

@@ -22,8 +22,8 @@ const P_DIR = join(SITE_DIR, 'p');
 const CAT_DIR = join(SITE_DIR, 'categorias');
 
 const ORIGIN = 'https://www.irmaosrobaski.com.br';
-const WHATSAPP = '5551996396818';              // (51) 99639-6818
-const WHATSAPP_DISPLAY = '(51) 99639-6818';
+const WHATSAPP = '5551998643154';              // (51) 99864-3154
+const WHATSAPP_DISPLAY = '(51) 99864-3154';
 const HORARIO_DISPLAY = 'Seg a Sex 8h–18h30 · Sáb 8h–12h';
 
 /* ════════════════════════════════════════════════════════════════
@@ -340,7 +340,7 @@ ${NAVBAR(1)}
     })};
   </script>
   <script src="../assets/js/main.js"></script>
-  <script src="../assets/js/cart.js?v=3"></script>
+  <script src="../assets/js/cart.js?v=4"></script>
   <script>
     /* Bind do qty + add to cart */
     document.addEventListener('DOMContentLoaded', () => {
@@ -478,7 +478,7 @@ ${NAVBAR(1)}
   ${WPP_FLOAT}
 
   <script src="../assets/js/main.js"></script>
-  <script src="../assets/js/cart.js?v=3"></script>
+  <script src="../assets/js/cart.js?v=4"></script>
 </body>
 </html>`;
 }
