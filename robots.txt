@@ -36,4 +36,4 @@ Allow: /
 User-agent: Applebot-Extended
 Allow: /
 
-Sitemap: https://irmaosrobaski.com.br/sitemap.xml
+Sitemap: https://www.irmaosrobaski.com.br/sitemap.xml

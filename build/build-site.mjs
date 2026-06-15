@@ -21,7 +21,7 @@ const DATA_DIR = join(SITE_DIR, 'data');
 const P_DIR = join(SITE_DIR, 'p');
 const CAT_DIR = join(SITE_DIR, 'categorias');
 
-const ORIGIN = 'https://irmaosrobaski.com.br'; // ⚠ trocar quando domínio for confirmado
+const ORIGIN = 'https://www.irmaosrobaski.com.br';
 const WHATSAPP = '5551996396818';              // (51) 99639-6818
 const WHATSAPP_DISPLAY = '(51) 99639-6818';
 const HORARIO_DISPLAY = 'Seg a Sex 8h–18h30 · Sáb 8h–12h';
