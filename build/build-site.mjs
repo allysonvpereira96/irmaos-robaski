@@ -120,6 +120,11 @@ const FOOTER = (level = 0) => {
             <li><a href="https://wa.me/${WHATSAPP}?text=Ol%C3%A1%21%20Gostaria%20de%20fazer%20um%20pedido.">WhatsApp · ${WHATSAPP_DISPLAY}</a></li>
             <li>contato@irmaosrobaski.com.br</li>
             <li style="opacity:.85;">${HORARIO_DISPLAY}</li>
+            <li style="opacity:.85; margin-top:8px;">
+              <a href="https://www.google.com/maps/search/?api=1&query=Av.+Coronel+Theodomiro+Porto+da+Fonseca%2C+1657+-+Nova+Sapucaia%2C+Sapucaia+do+Sul+-+RS%2C+93230-440" target="_blank" rel="noopener" style="color: rgba(255,255,255,0.85);">
+                Av. Coronel Theodomiro Porto da Fonseca, 1657 · Nova Sapucaia · Sapucaia do Sul/RS
+              </a>
+            </li>
           </ul>
         </div>
       </div>
